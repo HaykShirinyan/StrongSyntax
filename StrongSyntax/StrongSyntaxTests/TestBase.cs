@@ -13,7 +13,7 @@ namespace StrongSyntaxTests
 
         public TestBase()
         {
-            Syntax = new Syntax(@"Data Source=.\SQLEXPRESS;Initial Catalog=SMDB_DEV;Integrated Security=True");
+            Syntax = new Syntax(@"");
         }
     }
 }

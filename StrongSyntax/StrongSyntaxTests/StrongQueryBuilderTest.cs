@@ -7,13 +7,10 @@ using StrongSyntaxTests.Resources.DTOs;
 namespace StrongSyntaxTests
 {
     [TestClass]
-    public class StrongQueryBuilderTest
+    public class StrongQueryBuilderTest : TestBase
     {
-        public static Syntax Syntax { get; set; }
-
         public StrongQueryBuilderTest()
         {
-            Syntax = new Syntax(@"Data Source=.\SQLEXPRESS;Initial Catalog=SMDB_DEV;Integrated Security=True");
         }
 
         private InvItemDTO MapToDTO(InvItem model)

@@ -17,6 +17,17 @@ namespace StrongSyntax.DbHelpers
             _queryBuilder = queryBuilder;
         }
 
+        private SqlCommand CreateCommand(SqlConnection conn)
+        {
+            SqlCommand command = new SqlCommand();
+
+            command.Connection = conn;
+            command.CommandText = _queryBuilder.Query;
+            command.Parameters.AddRange(_queryBuilder.SqlParameters.ToArray());
+
+            return command;
+        }
+
         public int Execute()
         {
             int rowsAffected = 0;
@@ -25,12 +36,8 @@ namespace StrongSyntax.DbHelpers
             {
                 conn.Open();
 
-                using (var command = new SqlCommand())
+                using (var command = CreateCommand(conn))
                 {
-                    command.Connection = conn;
-                    command.CommandText = _queryBuilder.Query;
-                    command.Parameters.AddRange(_queryBuilder.SqlParameters.ToArray());
-
                     rowsAffected = command.ExecuteNonQuery();
                 }
             }
@@ -46,12 +53,8 @@ namespace StrongSyntax.DbHelpers
             {
                 conn.Open();
 
-                using (var command = new SqlCommand())
+                using (var command = CreateCommand(conn))
                 {
-                    command.Connection = conn;
-                    command.CommandText = _queryBuilder.Query;
-                    command.Parameters.AddRange(_queryBuilder.SqlParameters.ToArray());
-
                     rowsAffected = await command.ExecuteNonQueryAsync();
                 }
             }

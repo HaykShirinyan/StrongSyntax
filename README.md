@@ -89,6 +89,7 @@ In case if you need to map you Models to ViewModels or DTOs, you can call Projec
       return dto;
   }
   
+  // Execute the query.
   var items = Syntax
      .GetQuery()
      .Select(
@@ -104,4 +105,27 @@ In case if you need to map you Models to ViewModels or DTOs, you can call Projec
      .Where("InvItems.UnitPrice > @0 AND InvItems.Name LIKE @1", unitPrice, "%17")
      .PrepareReader<InvItem>()
      .Project(MapToDTO); //pass our method that does the mapping to the reader.
+```
+
+Inserting records: 
+
+```C#
+  var query = Syntax.GetInsert();
+
+  // This will insert a new record in InvItems table and will return the number of rows affected by the query.
+  var rows = query
+    .Insert
+    (
+        "Code"
+        , "Name"
+        , "Description"
+        , "Status"
+    ).Into("InvItems")
+    .Values
+    (
+        "1111"
+        , "Name 1111"
+        , "Description 1111"
+        , 0
+    ).Execute();
 ```

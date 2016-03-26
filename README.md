@@ -12,7 +12,7 @@ Configuration:
   syntax.Timout = 60000; // or your desired timeout for the queries.
 ```
 
-Build the SQL query.
+Build the SQL query:
 
 ```C#
   var items = Syntax
@@ -28,7 +28,7 @@ Build the SQL query.
     .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID");
 ```
 
-This will generate: 
+This will generate:
 
 ```SQL
   SELECT
@@ -41,6 +41,30 @@ This will generate:
   FROM InvItems
   INNER JOIN UnitOfMeasures
       ON UnitOfMeasures.ID = InvItems.UOMID
+```
+
+You can see the underlying query by calling ToString() method of the returned object. The generated query will not be executed until you execute it either with help of ADO.NET or call Read() method of the returned object. This will read the from database and populate you POCO class with the retarned dataset:
+
+```
+  var items = Syntax
+    .GetQuery()
+    .Select(
+        "InvItems.ID"
+        , "InvItems.Code"
+        , "InvItems.Name"
+        , "InvItems.Description"
+        , "UnitOfMeasures.ID"
+        , "UnitOfMeasures.Name"
+    ).From("InvItems")
+    .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
+    .PrepareReader<InvItem>()
+    .Read();
+    
+    //Then use the returned collection of objects (in this case InvItem type objects).
+    foreach(var i in items)
+    {
+      Console.WriteLine("ID = {0}, Name = {1}", i.ID, i.Name);
+    }
 ```
 
 The result will be

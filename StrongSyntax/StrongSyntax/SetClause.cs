@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntax
 {
+    [Serializable]
     public class SetClause : Dictionary<string, object>
     {
     }

@@ -8,6 +8,11 @@ namespace StrongSyntax
 {
     public interface ISelectClause : IQuerySyntax
     {
+        /// <summary>
+        /// Appends a from clause to the query.
+        /// </summary>
+        /// <param name="tableName">Table name to add with from clause.</param>
+        /// <returns></returns>
         IFromClause From(string tableName);
     }
 }

@@ -13,7 +13,6 @@ namespace StrongSyntax.QueryBuilders
         protected Syntax _syntax;
         protected string[] _select;
         protected List<SqlParameter> _paramList = new List<SqlParameter>();
-        protected Dictionary<Type, Delegate> _projectDict = new Dictionary<Type, Delegate>();
 
         public IReadOnlyCollection<SqlParameter> SqlParameters
         {

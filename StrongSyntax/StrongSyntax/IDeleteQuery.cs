@@ -8,6 +8,10 @@ namespace StrongSyntax
 {
     public interface IDeleteQuery
     {
+        /// <summary>
+        /// Appends a delete clause to the query.
+        /// </summary>
+        /// <returns></returns>
         IDeleteClause Delete();
     }
 }

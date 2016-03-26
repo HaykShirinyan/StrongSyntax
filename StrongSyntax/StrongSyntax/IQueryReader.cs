@@ -9,8 +9,24 @@ namespace StrongSyntax
     public interface IQueryReader<TEntity>
         where TEntity : class, new()
     {
+        /// <summary>
+        /// Reads data from the database.
+        /// </summary>
+        /// <returns></returns>
         ICollection<TEntity> Read();
+
+        /// <summary>
+        /// asynchronously data from the database.
+        /// </summary>
+        /// <returns></returns>
         Task<ICollection<TEntity>> ReadAsync();
+
+        /// <summary>
+        /// Project each returned datum to a new object.
+        /// </summary>
+        /// <typeparam name="TDestination">Destination type of the object to project the data to.</typeparam>
+        /// <param name="projection">Delegate that will do the mapping of database returned records to the new object.</param>
+        /// <returns></returns>
         ICollection<TDestination> Project<TDestination>(Func<TEntity, TDestination> projection) where TDestination : class;
     }
 }

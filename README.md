@@ -63,14 +63,8 @@ You can see the underlying query by calling ToString() method of the returned ob
     //Then use the returned collection of objects (in this case InvItem type objects).
     foreach(var i in items)
     {
-      Console.WriteLine("ID = {0}, Name = {1}", i.ID, i.Name);
+        Console.WriteLine("ID = {0}, Name = {1}", i.ID, i.Name);
     }
 ```
-
-The result will be
-
-| ID     |   Code   |   Name   |   Description |  ID   |  Name   |
----------|:---------|:---------|:--------------|:------|:--------|
-|  ...   |   ...    |    ...   |      ....     | ...   |   ...   |
 
 

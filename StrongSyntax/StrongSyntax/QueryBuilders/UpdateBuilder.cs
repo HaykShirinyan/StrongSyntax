@@ -36,8 +36,23 @@ namespace StrongSyntax.QueryBuilders
             }
         }
 
+        private void ValidateSetClause(SetClause setClause)
+        {
+            if (setClause == null)
+            {
+                throw new ArgumentNullException("setClause");
+            }
+
+            if (setClause.Count == 0)
+            {
+                throw new ArgumentException("Set clause of the update query wasn't provided.");
+            }
+        }
+
         public ISetClause Set(SetClause setClause)
         {
+            ValidateSetClause(setClause);
+
             string[] values = new string[setClause.Count];
 
             _query.AppendLine("SET");

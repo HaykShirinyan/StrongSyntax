@@ -57,12 +57,20 @@ namespace StrongSyntax.QueryBuilders
             _syntax = syntax;
         }
 
+        protected void CheckNullException(string arg, string argName)
+        {
+            if (string.IsNullOrEmpty(arg))
+            {
+                throw new ArgumentNullException(argName);
+            }
+        }
+
         protected StringBuilder CreateList(string[] selector)
         {
             return CreateList(selector, false);
         }
 
-        private void Addlias(StringBuilder sb, string s, bool autoAlias)
+        private void AddAlias(StringBuilder sb, string s, bool autoAlias)
         {
             if (autoAlias && s.IndexOf(" AS ", StringComparison.OrdinalIgnoreCase) < 0)
             {
@@ -77,7 +85,7 @@ namespace StrongSyntax.QueryBuilders
             sb.Append("\t")
                 .Append(selector[0]);
 
-            Addlias(sb, selector[0], autoAlias);
+            AddAlias(sb, selector[0], autoAlias);
 
             for (int i = 1; i < selector.Length; i++)
             {
@@ -85,7 +93,7 @@ namespace StrongSyntax.QueryBuilders
                     .Append("\t,")
                     .Append(selector[i]);
 
-                Addlias(sb, selector[i], autoAlias);
+                AddAlias(sb, selector[i], autoAlias);
             }
 
             return sb;
@@ -106,6 +114,8 @@ namespace StrongSyntax.QueryBuilders
 
         public IFromClause From(string tableName)
         {
+            CheckNullException(tableName, "tableName");
+
             _query.AppendFormat("FROM {0}", tableName)
                 .AppendLine();
 
@@ -114,6 +124,9 @@ namespace StrongSyntax.QueryBuilders
 
         private IFromClause Join(string join, string tableName, string condition)
         {
+            CheckNullException(tableName, "tableName");
+            CheckNullException(condition, "condition");
+
             _query.AppendFormat("{0} JOIN {1}", join, tableName)
                 .AppendLine()
                 .AppendFormat("    ON {0}", condition)
@@ -137,9 +150,21 @@ namespace StrongSyntax.QueryBuilders
             return Join("INNER", tableName, condition);
         }
 
+        private void ValidateWhereClause(string filter, int paramCount, object[] values)
+        {
+            CheckNullException(filter, "filter");
+
+            if (paramCount != values.Length)
+            {
+                throw new ArgumentException("Wrong number of parameters were passed to the query.");
+            }
+        }
+
         public IWhereClause Where(string filter, params object[] values)
         {
             int paramCount = filter.Count(s => s == '@');
+
+            ValidateWhereClause(filter, paramCount, values);
 
             for (int i = 0; i < values.Length; i++)
             {

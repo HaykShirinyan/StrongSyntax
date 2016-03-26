@@ -32,6 +32,8 @@ namespace StrongSyntax.QueryBuilders
 
         public IIntoClause Into(string tableName)
         {
+            this.CheckNullException(tableName, "tableName");
+
             _query.Replace("INSERT INTO", "INSERT INTO " + tableName);
 
             return this;

@@ -150,3 +150,37 @@ This will run the following query:
   	)
   ',N'@0 nvarchar(4),@1 nvarchar(9),@2 nvarchar(16),@3 int',@0=N'1111',@1=N'Name 1111',@2=N'Description 1111',@3=0
 ```
+
+In case if you need to insert multiple records in one batch, you can do:
+
+```C#
+  var query = Syntax.GetInsert();
+
+  // Prepare the insert clause
+  var into = query
+      .Insert
+      (
+          "Code"
+          , "Name"
+          , "Description"
+          , "Status"
+      ).Into("InvItems");
+
+  // Add the values
+  for (int i = 2000; i < 2100; i++)
+  {
+      string code = i.ToString();
+
+      into = into
+          .Values
+          (
+              code
+              , "Name " + code
+              , "Description " + code
+              , 0
+          );
+  }
+
+  // This will insert 100 records into InvItems table in one batch.
+  var rows = into.Execute();
+```

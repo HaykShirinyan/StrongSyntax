@@ -9,7 +9,7 @@ namespace StrongSyntax.QueryBuilders
     class DeleteBuilder : DeleteUpdateBase, IDeleteQuery, IDeleteClause, IFromDml
     {
         public DeleteBuilder(Syntax syntax) 
-            : base(syntax)
+            : base(syntax) 
         {
         }
 

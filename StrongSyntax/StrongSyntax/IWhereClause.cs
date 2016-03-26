@@ -8,6 +8,6 @@ namespace StrongSyntax
 {
     public interface IWhereClause : ICompleteQuery
     {
-        ICompleteQuery GroupBy(params string[] groupings);
+        IGroupByClause GroupBy(params string[] groupings);
     }
 }

@@ -12,6 +12,8 @@ namespace StrongSyntax
         IFromClause RightJoin(string tableName, string condition);
         IFromClause InnerJoin(string tableName, string condition);
         IWhereClause Where(string filter, params object[] values);
-        ICompleteQuery GroupBy(params string[] groupings);
+        IGroupByClause GroupBy(params string[] groupings);
+        IOrderByClause OrderBy(params string[] orderList);
+        IOrderByClause OrderByDescending(params string[] orderList);
     }
 }

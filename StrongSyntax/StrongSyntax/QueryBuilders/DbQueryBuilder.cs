@@ -7,13 +7,12 @@ using System.Text;
 
 namespace StrongSyntax.QueryBuilders
 {
-    class DbQueryBuilder : IDynamicQuery, ISelectClause, IFromClause, IWhereClause
+    class DbQueryBuilder : IDynamicQuery, ISelectClause, IFromClause, IWhereClause, IGroupByClause, IOrderByClause, IOffsetClause, IFetchClause
     {
         protected StringBuilder _query = new StringBuilder();
         protected Syntax _syntax;
         protected string[] _select;
         protected List<SqlParameter> _paramList = new List<SqlParameter>();
-        //protected string _connectionString;
         protected Dictionary<Type, Delegate> _projectDict = new Dictionary<Type, Delegate>();
 
         public IReadOnlyCollection<SqlParameter> SqlParameters
@@ -153,13 +152,52 @@ namespace StrongSyntax.QueryBuilders
             return this;
         }
 
-        public ICompleteQuery GroupBy(params string[] groupings)
+        public IGroupByClause GroupBy(params string[] groupings)
         {
             _query.AppendLine("GROUP BY");
 
             var groupBy = CreateList(groupings);
 
             _query.AppendLine(groupBy.ToString());
+
+            return this;
+        }
+
+        private IOrderByClause OrderBy(string order, params string[] orderList)
+        {
+            _query.AppendLine("ORDER BY");
+
+            var sb = this.CreateList(orderList);
+
+            _query.Append(sb.ToString())
+                .Append(" ")
+                .AppendLine(order);
+
+            return this;
+        }
+
+        public IOrderByClause OrderBy(params string[] orderList)
+        {
+            return OrderBy("ASC", orderList);
+        }
+
+        public IOrderByClause OrderByDescending(params string[] orderList)
+        {
+            return OrderBy("DESC", orderList);
+        }
+
+        public IOffsetClause Offset(int rowsToSkip)
+        {
+            _query.AppendFormat("OFFSET {0} ROWS", rowsToSkip)
+                .AppendLine();
+
+            return this;
+        }
+
+        public IFetchClause Fetch(int rowsToTake)
+        {
+            _query.AppendFormat("FETCH NEXT {0} ROWS ONLY", rowsToTake)
+                .AppendLine();
 
             return this;
         }

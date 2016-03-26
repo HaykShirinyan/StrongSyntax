@@ -52,10 +52,12 @@
     <Compile Include="IDeleteClause.cs" />
     <Compile Include="IDeleteQuery.cs" />
     <Compile Include="IFromDml.cs" />
+    <Compile Include="IGroupByClause.cs" />
     <Compile Include="IInsertQuery.cs" />
     <Compile Include="IFromClause.cs" />
     <Compile Include="IInsertClause.cs" />
     <Compile Include="IIntoClause.cs" />
+    <Compile Include="IOrderByClause.cs" />
     <Compile Include="IQueryReader.cs" />
     <Compile Include="ISelectClause.cs" />
     <Compile Include="ISetClause.cs" />

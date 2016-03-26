@@ -10,6 +10,7 @@ namespace StrongSyntax
         where TEntity : class, new()
     {
         ICollection<TEntity> Read();
+        Task<ICollection<TEntity>> ReadAsync();
         ICollection<TDestination> Project<TDestination>(Func<TEntity, TDestination> projection) where TDestination : class;
     }
 }

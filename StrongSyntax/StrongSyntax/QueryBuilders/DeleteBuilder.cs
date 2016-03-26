@@ -22,9 +22,6 @@ namespace StrongSyntax.QueryBuilders
 
         public new IFromDml From(string tableName)
         {
-            //_query.AppendFormat("FROM {0}", tableName)
-            //    .AppendLine();
-
             return (IFromDml)base.From(tableName);
         }
     }

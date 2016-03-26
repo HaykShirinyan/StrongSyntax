@@ -8,6 +8,7 @@ StrongSyntax may solve some of those problems. It lets you write your entire DAL
 
 Here are some examples:
 
+```
   var items = Syntax
     .GetQuery()
     .Select(
@@ -21,5 +22,6 @@ Here are some examples:
     .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
     .PrepareReader<InvItem>()
     .Read();
+```
 
 

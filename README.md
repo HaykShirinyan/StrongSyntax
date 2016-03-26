@@ -61,7 +61,7 @@ You can see the underlying query by calling ToString() method of the returned ob
     .Read();
     
     //Then use the returned collection of objects (in this case InvItem type objects).
-    foreach(var i in items)
+    foreach (var i in items)
     {
         Console.WriteLine("ID = {0}, Name = {1}", i.ID, i.Name);
     }
@@ -183,4 +183,20 @@ In case if you need to insert multiple records in one batch, you can do:
 
   // This will insert 100 records into InvItems table in one batch.
   var rows = into.Execute();
+```
+
+Updates:
+
+```C#
+  // Notice we use async version of this query. All the queries support async methods.
+  var rows = await Syntax.GetUpdate()
+    .Update("InvItems")
+    .Set(new SetClause()
+    {
+        {"Code", "1111" }
+        , {"Name", "Changed Name" }
+        , {"Description", "Changed Description" }
+        , {"UnitPrice", 1000.00M }
+    }).Where("Code = @0", "1111")
+    .ExecuteAsync();
 ```

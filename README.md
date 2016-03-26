@@ -45,7 +45,7 @@ This will generate:
 
 You can see the underlying query by calling ToString() method of the returned object. The generated query will not be executed until you execute it either with help of ADO.NET or call Read() method of the returned object. This will read the from database and populate you POCO class with the retarned dataset:
 
-```
+```C#
   var items = Syntax
     .GetQuery()
     .Select(

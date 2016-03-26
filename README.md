@@ -238,4 +238,4 @@ Future goals:
     });
 ```
 
-Any ideas and suggenstions will be welcome, so don't hessitate to express you opinion.
+Any ideas and suggenstions will be welcome, so don't hessitate to express your opinion.

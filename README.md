@@ -216,7 +216,7 @@ All this queries have certain compile time checks to avoid any mistakes, but if 
 Future goals:
 
 ```C#
-  // You should be able to do something like this in teh future.
+  // You should be able to do something like this in the future.
   var items = Syntax
     .GetStrongQuery<InvItem>()
     .Select(i => new object[]
@@ -225,7 +225,7 @@ Future goals:
         ,i.Code
         ,i.Name
         ,i.Description
-        ,i.WarehouseItem.Sum(s => s.OnHandQty)
+        ,i.WarehouseItems.Sum(s => s.OnHandQty)
     }).From()
     .LeftJoin<UnitOfMeasure>((i, u) => i.UOMID == u.ID)
     .LeftJoin<WarehouseItem>((i, w) => i.ID == w.InvItemID)
@@ -237,3 +237,5 @@ Future goals:
         ,i.Description
     });
 ```
+
+Any ideas and suggenstions will be welcome, so don't hessitate to express you opinion.

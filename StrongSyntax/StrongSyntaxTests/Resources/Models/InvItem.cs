@@ -37,6 +37,6 @@ namespace StrongSyntaxTests.Resources.Models
 
         public virtual UnitOfMeasure UOM { get; set; }
 
-        public virtual ICollection<WarehouseItem> WarehouseItem { get; set; }
+        public virtual ICollection<WarehouseItem> WarehouseItems { get; set; }
     }
 }

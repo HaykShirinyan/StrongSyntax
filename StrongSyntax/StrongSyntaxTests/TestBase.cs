@@ -17,7 +17,7 @@ namespace StrongSyntaxTests
             using (var db = new TestDbContext())
             {
                 Syntax = new Syntax(db.Database.Connection.ConnectionString);
-
+                
                 db.Database.Initialize(true);
             }
         }

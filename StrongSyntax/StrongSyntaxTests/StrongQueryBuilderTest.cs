@@ -52,7 +52,7 @@ namespace StrongSyntaxTests
                     ,i.Code
                     ,i.Name
                     ,i.Description
-                    ,i.WarehouseItem.Sum(s => s.OnHandQty)
+                    ,i.WarehouseItems.Sum(s => s.OnHandQty)
                 }).From()
                 .LeftJoin<UnitOfMeasure>((i, u) => i.UOMID == u.ID)
                 .LeftJoin<WarehouseItem>((i, w) => i.ID == w.InvItemID)

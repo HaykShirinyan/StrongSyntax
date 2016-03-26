@@ -4,6 +4,7 @@ using StrongSyntax;
 using System.Linq;
 using StrongSyntaxTests.Resources.DTOs;
 using StrongSyntaxTests.Resources.Models;
+using System.Threading.Tasks;
 
 namespace StrongSyntaxTests
 {
@@ -112,6 +113,83 @@ namespace StrongSyntaxTests
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
             Assert.IsTrue(items.All(i => i.ID != Guid.Empty && i.OnHandQty != null), "Sum didn't work.");
+        }
+
+        [TestMethod]
+        public void OrderBy()
+        {
+            var items = Syntax
+                .GetQuery()
+                .Select(
+                   "InvItems.ID"
+                   , "InvItems.Code"
+                   , "InvItems.Name"
+                   , "InvItems.Description"
+                   , "InvItems.UnitPrice"
+               ).From("InvItems")
+               .OrderBy(
+                    "InvItems.UnitPrice"
+                ).PrepareReader<InvItem>()
+                .Read();
+
+            var first = items.FirstOrDefault();
+            var last = items.ElementAt(items.Count - 1);
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(last.UnitPrice > first.UnitPrice, "Order by failed.");
+        }
+
+        [TestMethod]
+        public void OrderByDescending()
+        {
+            var items = Syntax
+                .GetQuery()
+                .Select(
+                   "InvItems.ID"
+                   , "InvItems.Code"
+                   , "InvItems.Name"
+                   , "InvItems.Description"
+                   , "InvItems.UnitPrice"
+               ).From("InvItems")
+               .OrderByDescending(
+                    "InvItems.UnitPrice"
+                ).PrepareReader<InvItem>()
+                .Read();
+
+            var first = items.FirstOrDefault();
+            var last = items.ElementAt(items.Count - 1);
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(first.UnitPrice > last.UnitPrice, "Order by failed.");
+        }
+
+        [TestMethod]
+        public async Task OffsetFetch()
+        {
+            int rowsToSkip = 5;
+            int rowsToTake = 5;
+
+            var items = await Syntax
+                .GetQuery()
+                .Select(
+                   "InvItems.ID"
+                   , "InvItems.Code"
+                   , "InvItems.Name"
+                   , "InvItems.Description"
+                   , "InvItems.UnitPrice"
+               ).From("InvItems")
+               .OrderBy(
+                    "InvItems.Code"
+                ).Offset(rowsToSkip)
+                .Fetch(rowsToTake)
+                .PrepareReader<InvItem>()
+                .ReadAsync();
+
+            var first = items.FirstOrDefault();
+            var last = items.ElementAt(items.Count - 1);
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.Count == rowsToTake, "Returned wrong number of rows.");
         }
     }
 }

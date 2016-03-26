@@ -67,4 +67,41 @@ You can see the underlying query by calling ToString() method of the returned ob
     }
 ```
 
+In case if you need to map you Models to ViewModels or DTOs, you can call Project() method passing it a delegate that does the mapping:
 
+```#
+  // Method that maps the Model to DTO.
+  private InvItemDTO MapToDTO(InvItem model)
+  {
+      InvItemDTO dto = new InvItemDTO();
+  
+      dto.ID = model.ID;
+      dto.OnHandQty = model.OnHandQty;
+  
+      if (model.UOM != null)
+      {
+          dto.UOM = new UnitOfMeasureDTO();
+  
+          dto.UOM.ID = model.UOM.ID;
+          dto.UOM.Name = model.UOM.Name;
+      }
+  
+      return dto;
+  }
+  
+  var items = Syntax
+     .GetQuery()
+     .Select(
+         "InvItems.ID"
+         , "InvItems.Code"
+         , "InvItems.Name"
+         , "InvItems.Description"
+         , "InvItems.UnitPrice"
+         , "UnitOfMeasures.ID"
+         , "UnitOfMeasures.Name"
+     ).From("InvItems")
+     .LeftJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
+     .Where("InvItems.UnitPrice > @0 AND InvItems.Name LIKE @1", unitPrice, "%17")
+     .PrepareReader<InvItem>()
+     .Project(MapToDTO); //pass our method that does the mapping to the reader.
+```

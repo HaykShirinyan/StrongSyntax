@@ -129,3 +129,24 @@ Inserting records:
         , 0
     ).Execute();
 ```
+
+This will run the following query:
+
+```SQL
+  exec sp_executesql 
+  	N'INSERT INTO InvItems
+  	(
+  		Code
+  		,Name
+  		,Description
+  		,Status
+  	)
+  	VALUES
+  	(
+  		@0
+  		,@1
+  		,@2
+  		,@3
+  	)
+  ',N'@0 nvarchar(4),@1 nvarchar(9),@2 nvarchar(16),@3 int',@0=N'1111',@1=N'Name 1111',@2=N'Description 1111',@3=0
+```

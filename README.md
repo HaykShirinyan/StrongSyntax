@@ -69,7 +69,7 @@ You can see the underlying query by calling ToString() method of the returned ob
 
 In case if you need to map you Models to ViewModels or DTOs, you can call Project() method passing it a delegate that does the mapping:
 
-```#
+```C#
   // Method that maps the Model to DTO.
   private InvItemDTO MapToDTO(InvItem model)
   {

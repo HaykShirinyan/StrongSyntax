@@ -7,8 +7,15 @@ namespace StrongSyntaxTests
     public class DeleteTest : TestBase
     {
         [TestMethod]
-        public void TestMethod1()
+        public void Delete()
         {
+            var rows = Syntax.GetDelete()
+                .Delete()
+                .From("InvItems")
+                .Where("Code = @0", "1111")
+                .Execute();
+
+            Assert.AreNotEqual(0, rows, "No records were deleted.");
         }
     }
 }

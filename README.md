@@ -43,7 +43,7 @@ This will generate:
       ON UnitOfMeasures.ID = InvItems.UOMID
 ```
 
-You can see the underlying query by calling ToString() method of the returned object. The generated query will not be executed until you execute it either with help of ADO.NET or call Read() method of the returned object. This will read the from database and populate you POCO class with the retarned dataset:
+You can see the underlying query by calling ToString() method of the returned object. The generated query will not be executed until you execute it either with help of ADO.NET or call Read() method of the returned object. This will read the data from database and populate your POCO class with the returned dataset:
 
 ```C#
   var items = Syntax
@@ -209,4 +209,31 @@ Deletes:
     .From("InvItems")
     .Where("Code = @0", "1111")
     .Execute();
+```
+
+All this queries have certain compile time checks to avoid any mistakes, but if you mistype a column name, or write something wrong in where clause, you won't know it unitl you run the query during the runtime. That is why we need 100% compile time checking, but that functionality is still under development.
+
+Future goals:
+
+```C#
+  // You should be able to do something like this in teh future.
+  var items = Syntax
+    .GetStrongQuery<InvItem>()
+    .Select(i => new object[]
+    {
+        i.ID
+        ,i.Code
+        ,i.Name
+        ,i.Description
+        ,i.WarehouseItem.Sum(s => s.OnHandQty)
+    }).From()
+    .LeftJoin<UnitOfMeasure>((i, u) => i.UOMID == u.ID)
+    .LeftJoin<WarehouseItem>((i, w) => i.ID == w.InvItemID)
+    .GroupBy(i => new object[]
+    {
+        i.ID
+        ,i.Code
+        ,i.Name
+        ,i.Description
+    });
 ```

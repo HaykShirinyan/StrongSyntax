@@ -4,7 +4,7 @@ StrongSyntax is a C# library that lets you execute ad hoc queries from your data
 
 Configuration:
 
-```
+```C#
   // Initialize the syntax container. you can store it somewhere statically for convinience.
   var syntax = new Syntax("YourConnectionString");
   

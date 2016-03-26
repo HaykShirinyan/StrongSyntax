@@ -200,3 +200,13 @@ Updates:
     }).Where("Code = @0", "1111")
     .ExecuteAsync();
 ```
+
+Deletes:
+
+```C#
+   var rows = Syntax.GetDelete()
+    .Delete()
+    .From("InvItems")
+    .Where("Code = @0", "1111")
+    .Execute();
+```

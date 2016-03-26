@@ -20,4 +20,8 @@ Here are some examples:
     .Read();
 ```
 
+The result will be
+
+| ID     |   Code   |   Name   |   Description |  ID   |  Name   |
+----------------------------------------------------------------
 

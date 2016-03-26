@@ -9,8 +9,8 @@ namespace StrongSyntax.QueryBuilders
 {
     class DmlBase : DbQueryBuilder
     {
-        public DmlBase(string connectionString) 
-            : base(connectionString)
+        public DmlBase(Syntax syntax) 
+            : base(syntax)
         {
         }
 

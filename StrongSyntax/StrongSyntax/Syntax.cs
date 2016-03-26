@@ -26,23 +26,28 @@ namespace StrongSyntax
 
         public IDynamicQuery GetQuery()
         {
-            return new DbQueryBuilder(_connectionString);
+            return new DbQueryBuilder(this);
         }
 
         public IInsertQuery GetInsert()
         {
-            return new InsertBuilder(_connectionString);
+            return new InsertBuilder(this);
         }
 
         public IUpdateQuery GetUpdate()
         {
-            return new UpdateBuilder(_connectionString);
+            return new UpdateBuilder(this);
+        }
+
+        public IDeleteQuery GetDelete()
+        {
+            return new DeleteBuilder(this);
         }
 
         public IStrongQuery<TEntity> GetStrongQuery<TEntity>()
             where TEntity : class
         {
-            return new StrongQueryBuilder<TEntity>(_connectionString);
+            return new StrongQueryBuilder<TEntity>(this);
         }
     }
 }

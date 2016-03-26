@@ -10,9 +10,10 @@ namespace StrongSyntax.QueryBuilders
     class DbQueryBuilder : IDynamicQuery, ISelectClause, IFromClause, IWhereClause
     {
         protected StringBuilder _query = new StringBuilder();
+        protected Syntax _syntax;
         protected string[] _select;
         protected List<SqlParameter> _paramList = new List<SqlParameter>();
-        protected string _connectionString;
+        //protected string _connectionString;
         protected Dictionary<Type, Delegate> _projectDict = new Dictionary<Type, Delegate>();
 
         public IReadOnlyCollection<SqlParameter> SqlParameters
@@ -27,7 +28,20 @@ namespace StrongSyntax.QueryBuilders
         {
             get
             {
-                return _connectionString;
+                return _syntax.ConnectionString;
+            }
+        }
+
+        public int Timeout
+        {
+            get
+            {
+                if (_syntax.Timout > 0)
+                {
+                    return _syntax.Timout;
+                }
+
+                return 30000;
             }
         }
 
@@ -39,9 +53,9 @@ namespace StrongSyntax.QueryBuilders
             }
         }
 
-        public DbQueryBuilder(string connectionString)
+        public DbQueryBuilder(Syntax syntax)
         {
-            _connectionString = connectionString;
+            _syntax = syntax;
         }
 
         protected StringBuilder CreateList(string[] selector)

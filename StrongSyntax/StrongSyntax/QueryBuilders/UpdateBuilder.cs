@@ -9,8 +9,8 @@ namespace StrongSyntax.QueryBuilders
 {
     class UpdateBuilder : DmlBase, IUpdateQuery, IUpdateClause, ISetClause
     {
-        public UpdateBuilder(string connectionString) 
-            : base(connectionString)
+        public UpdateBuilder(Syntax syntax) 
+            : base(syntax)
         {
         }
 

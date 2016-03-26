@@ -157,6 +157,7 @@ namespace StrongSyntax.DbHelpers
             SqlCommand command = new SqlCommand();
 
             command.CommandText = _queryBuilder.Query;
+            command.CommandTimeout = _queryBuilder.Timeout;
             command.Connection = conn;
 
             if (_queryBuilder.SqlParameters.Count > 0)

@@ -25,8 +25,8 @@ namespace StrongSyntax.QueryBuilders
             }
         }
 
-        public StrongQueryBuilder(string connectionString)
-            : base(connectionString)
+        public StrongQueryBuilder(Syntax syntax)
+            : base(syntax)
         {
         }
 

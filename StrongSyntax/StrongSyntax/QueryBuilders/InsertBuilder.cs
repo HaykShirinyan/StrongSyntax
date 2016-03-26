@@ -12,8 +12,8 @@ namespace StrongSyntax.QueryBuilders
     {
         private bool _isValueAdded;
 
-        public InsertBuilder(string connectionString) 
-            : base(connectionString)
+        public InsertBuilder(Syntax syntax) 
+            : base(syntax)
         {
         }
 

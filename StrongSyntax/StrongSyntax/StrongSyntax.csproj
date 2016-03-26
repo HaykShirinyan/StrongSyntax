@@ -49,6 +49,9 @@
   <ItemGroup>
     <Compile Include="ICompleteDml.cs" />
     <Compile Include="ICompleteQuery.cs" />
+    <Compile Include="IDeleteClause.cs" />
+    <Compile Include="IDeleteQuery.cs" />
+    <Compile Include="IFromDml.cs" />
     <Compile Include="IInsertQuery.cs" />
     <Compile Include="IFromClause.cs" />
     <Compile Include="IInsertClause.cs" />
@@ -59,6 +62,8 @@
     <Compile Include="IUpdateClause.cs" />
     <Compile Include="IUpdateQuery.cs" />
     <Compile Include="IWhereClause.cs" />
+    <Compile Include="QueryBuilders\DeleteBuilder.cs" />
+    <Compile Include="QueryBuilders\DeleteUpdateBase.cs" />
     <Compile Include="QueryBuilders\DmlBase.cs" />
     <Compile Include="QueryBuilders\InsertBuilder.cs" />
     <Compile Include="DbHelpers\DbQueryReader.cs" />

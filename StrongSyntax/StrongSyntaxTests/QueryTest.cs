@@ -45,8 +45,8 @@ namespace StrongSyntaxTests
                 .PrepareReader<InvItem>()
                 .Read();
 
-            Assert.IsTrue(items.Count > 0);
-            Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty));
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty), "Inner join didn't work.");
         }
 
         [TestMethod]
@@ -66,8 +66,8 @@ namespace StrongSyntaxTests
                 .PrepareReader<InvItem>()
                 .Project(MapToDTO);
 
-            Assert.IsTrue(items.Count > 0);
-            Assert.IsTrue(items.Any(i => i.ID != null && i.UOM.ID != Guid.Empty));
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.Any(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");
         }
 
         [TestMethod]
@@ -87,12 +87,12 @@ namespace StrongSyntaxTests
                    , "UnitOfMeasures.Name"
                ).From("InvItems")
                .LeftJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
-               .Where("InvItems.UnitPrice = @0 AND InvItems.Name LIKE @1", unitPrice, "%17")
+               .Where("InvItems.UnitPrice > @0 AND InvItems.Name LIKE @1", unitPrice, "%17")
                .PrepareReader<InvItem>()
                .Read();
 
-            Assert.IsTrue(items.Count > 0);
-            Assert.IsTrue(items.All(i => i.ID != null && i.UnitPrice == unitPrice));
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.All(i => i.ID != null && i.UnitPrice > unitPrice), "Where clause didn't work.");
         }
 
         [TestMethod]
@@ -110,8 +110,8 @@ namespace StrongSyntaxTests
                 ).PrepareReader<InvItem>()
                 .Project(MapToDTO);
 
-            Assert.IsTrue(items.Count > 0);
-            Assert.IsTrue(items.All(i => i.ID != Guid.Empty && i.OnHandQty != null));
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.All(i => i.ID != Guid.Empty && i.OnHandQty != null), "Sum didn't work.");
         }
     }
 }

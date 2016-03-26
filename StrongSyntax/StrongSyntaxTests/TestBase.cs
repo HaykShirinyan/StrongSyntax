@@ -1,9 +1,8 @@
 ﻿using StrongSyntax;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Data.Entity;
+using StrongSyntaxTests.Resources;
 
 namespace StrongSyntaxTests
 {
@@ -13,7 +12,14 @@ namespace StrongSyntaxTests
 
         public TestBase()
         {
-            Syntax = new Syntax(@"");
+            Database.SetInitializer(new DbInitializer());
+
+            using (var db = new TestDbContext())
+            {
+                Syntax = new Syntax(db.Database.Connection.ConnectionString);
+
+                db.Database.Initialize(true);
+            }
         }
     }
 }

@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace StrongSyntaxTests.Resources.Models
 {
-    class Warehouse
+    class Warehouse : ModelBase
     {
-        public Guid ID { get; set; }
-
-        public string Code { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public virtual ICollection<InvItem> InvItems { get; set; }
+        public virtual ICollection<WarehouseItem> InvItems { get; set; }
     }
 }

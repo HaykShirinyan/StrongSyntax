@@ -27,7 +27,7 @@ namespace StrongSyntaxTests
                     , 0
                 ).Execute();
 
-            Assert.AreNotEqual(0, rows);
+            Assert.AreNotEqual(0, rows, "No records were inserted.");
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace StrongSyntaxTests
 
             var rows = into.Execute();
 
-            Assert.AreEqual(rows, 100);
+            Assert.AreEqual(rows, 100, "No records were inserted.");
         }
     }
 }

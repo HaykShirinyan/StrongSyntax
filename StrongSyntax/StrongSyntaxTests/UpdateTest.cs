@@ -22,7 +22,7 @@ namespace StrongSyntaxTests
                 }).Where("Code = @0", "1111")
                 .ExecuteAsync();
 
-            Assert.AreNotEqual(0, rows);
+            Assert.AreNotEqual(0, rows, "No records were updated.");
         }
     }
 }

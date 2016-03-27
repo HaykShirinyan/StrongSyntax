@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntax.QueryBuilders
 {
-    class DmlBase : DbQueryBuilder
+    class DmlBase : SelectBuilder
     {
         public DmlBase(Syntax syntax) 
             : base(syntax)

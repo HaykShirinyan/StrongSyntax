@@ -10,9 +10,9 @@ namespace StrongSyntax.DbHelpers
 {
     class DmlQueryHelper
     {
-        private DbQueryBuilder _queryBuilder;
+        private SelectBuilder _queryBuilder;
 
-        public DmlQueryHelper(DbQueryBuilder queryBuilder)
+        public DmlQueryHelper(SelectBuilder queryBuilder)
         {
             _queryBuilder = queryBuilder;
         }

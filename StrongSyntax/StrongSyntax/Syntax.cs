@@ -26,7 +26,7 @@ namespace StrongSyntax
 
         public IDynamicQuery GetQuery()
         {
-            return new DbQueryBuilder(this);
+            return new SelectBuilder(this);
         }
 
         public IInsertQuery GetInsert()

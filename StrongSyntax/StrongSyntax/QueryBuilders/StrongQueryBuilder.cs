@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntax.QueryBuilders
 {
-    class StrongQueryBuilder<TEntity> : DbQueryBuilder, IStrongQuery<TEntity>
+    class StrongQueryBuilder<TEntity> : SelectBuilder, IStrongQuery<TEntity>
         where TEntity : class
     {
         private string _tableName;

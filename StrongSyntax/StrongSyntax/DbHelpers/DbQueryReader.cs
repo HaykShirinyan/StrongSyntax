@@ -14,9 +14,9 @@ namespace StrongSyntax.DbHelpers
     class DbQueryReader<TEntity> : IQueryReader<TEntity>
         where TEntity : class, new()
     {
-        private DbQueryBuilder _queryBuilder;
+        private SelectBuilder _queryBuilder;
 
-        public DbQueryReader(DbQueryBuilder queryBuilder)
+        public DbQueryReader(SelectBuilder queryBuilder)
         {
             _queryBuilder = queryBuilder;
         }

@@ -74,7 +74,7 @@
     <Compile Include="IDynamicQuery.cs" />
     <Compile Include="IQuerySyntax.cs" />
     <Compile Include="IStrongQuery.cs" />
-    <Compile Include="QueryBuilders\DbQueryBuilder.cs" />
+    <Compile Include="QueryBuilders\SelectBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryBuilders\QueryBuilderBase.cs" />
     <Compile Include="QueryBuilders\StrongQueryBuilder.cs" />

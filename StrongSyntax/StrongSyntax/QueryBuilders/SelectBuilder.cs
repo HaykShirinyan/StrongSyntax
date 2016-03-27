@@ -7,9 +7,9 @@ using System.Text;
 
 namespace StrongSyntax.QueryBuilders
 {
-    class DbQueryBuilder : QueryBuilderBase, IDynamicQuery, ISelectClause, IFromClause, IWhereClause, IGroupByClause, IOrderByClause, IOffsetClause, IFetchClause
+    class SelectBuilder : QueryBuilderBase, IDynamicQuery, ISelectClause, IFromClause, IWhereClause, IGroupByClause, IOrderByClause, IOffsetClause, IFetchClause
     {
-        public DbQueryBuilder(Syntax syntax)
+        public SelectBuilder(Syntax syntax)
             : base(syntax)
         {
         }

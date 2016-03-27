@@ -107,6 +107,71 @@ In case if you need to map you Models to ViewModels or DTOs, you can call Projec
      .Project(MapToDTO); //pass our method that does the mapping to the reader.
 ```
 
+Subselects:
+
+```C#
+  // Prepare the subselect.
+  private ICompleteQuery GetSubSelect()
+  {
+      var items = Syntax
+          .GetQuery()
+          .Select(
+             "InvItems.ID"
+             , "InvItems.Code"
+             , "InvItems.Name"
+             , "InvItems.Description"
+             , "InvItems.UnitPrice"
+         ).From("InvItems");
+
+      return items;
+  }
+  
+  // Get our subselect.
+  var subSelect = GetSubSelect();
+
+  var items = await Syntax
+    .GetQuery()
+    .Select(
+        "I.ID"
+        , "I.Code"
+        , "I.UnitPrice"
+    ).From(subSelect, "I") // Pass it to the main query with an alias that can be used in select clause
+```
+
+That will generate: 
+
+```SQL
+  SELECT
+  	I.ID
+  	,I.Code
+  	,I.UnitPrice
+  FROM
+  (
+  SELECT
+  	InvItems.ID
+  	,InvItems.Code
+  	,InvItems.Name
+  	,InvItems.Description
+  	,InvItems.UnitPrice
+  FROM InvItems
+  ) AS I
+```
+
+However, if you use the generated SQL query to read and populate your POCO classes with the help of StrongSyntax buid in database reader, that operation will fail because StrongSyntax won't be able to map the returned columns to you POCO class properties. In that case you have to do the following:
+
+```C#
+  // This will work fine. You need to do this only when using subselects.
+  var items = await Syntax
+    .GetQuery()
+    .Select(
+        "I.ID AS [InvItems.ID]" // This is how we tell StrongSyntax that ID belongs to InvItem class.
+        , "I.Code AS [InvItems.Code]"
+        , "I.UnitPrice AS [InvItems.UnitPrice]"
+    ).From(subSelect, "I")
+    .PrepareReader<InvItem>()
+    .ReadAsync();
+```
+
 Inserting records: 
 
 ```C#

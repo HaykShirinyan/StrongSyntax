@@ -22,7 +22,7 @@ namespace StrongSyntax.DbHelpers
             SqlCommand command = new SqlCommand();
 
             command.Connection = conn;
-            command.CommandText = _queryBuilder.Query;
+            command.CommandText = _queryBuilder.RawQuery;
             command.CommandTimeout = _queryBuilder.Timeout;
             command.Parameters.AddRange(_queryBuilder.SqlParameters.ToArray());
 

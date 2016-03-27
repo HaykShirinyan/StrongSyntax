@@ -43,7 +43,7 @@ namespace StrongSyntax.QueryBuilders
             }
         }
 
-        public string Query
+        public string RawQuery
         {
             get
             {
@@ -51,9 +51,26 @@ namespace StrongSyntax.QueryBuilders
             }
         }
 
+        public StringBuilder Query
+        {
+            get
+            {
+                return _query;
+            }
+        }
+
         public QueryBuilderBase(Syntax syntax)
         {
             _syntax = syntax;
+        }
+
+        protected void CheckNullException<TArg>(TArg arg, string argName)
+            where TArg : class
+        {
+            if (arg == null)
+            {
+                throw new ArgumentNullException(argName);
+            }
         }
 
         protected void CheckNullException(string arg, string argName)

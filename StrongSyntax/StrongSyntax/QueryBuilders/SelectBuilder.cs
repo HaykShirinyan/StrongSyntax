@@ -37,6 +37,27 @@ namespace StrongSyntax.QueryBuilders
             return this;
         }
 
+        private void ValidatSubselect(ICompleteQuery subSelect, string alias)
+        {
+            this.CheckNullException(alias, "alias");
+            this.CheckNullException(subSelect, "subSelect");
+        }
+
+        public IFromClause From(ICompleteQuery subSelect, string alias)
+        {
+            ValidatSubselect(subSelect, alias);
+
+            this._paramList.AddRange(subSelect.SqlParameters);
+
+            _query.AppendLine("FROM")
+                .AppendLine("(")
+                .Append(subSelect.ToString())
+                .AppendFormat(") AS {0}", alias) 
+                .AppendLine();
+
+            return this;
+        }
+
         private IFromClause Join(string join, string tableName, string condition)
         {
             this.CheckNullException(tableName, "tableName");
@@ -81,9 +102,9 @@ namespace StrongSyntax.QueryBuilders
 
             ValidateWhereClause(filter, paramCount, values);
 
-            for (int i = 0; i < values.Length; i++)
+            foreach (var val in values)
             {
-                this._paramList.Add(new SqlParameter("@" + i.ToString(), values[i]));
+                this._paramList.Add(new SqlParameter("@" + this._paramList.Count.ToString(), val));
             }
 
             this._query.AppendFormat("WHERE {0}", filter)
@@ -147,17 +168,5 @@ namespace StrongSyntax.QueryBuilders
         {
             return new DbQueryReader<TEntity>(this);
         }
-
-        //public override string ToString()
-        //{
-        //    StringBuilder sb = new StringBuilder(_query.ToString());
-
-        //    foreach(var s in _select)
-        //    {
-        //        sb.Replace(string.Format(" AS [{0}]", s), "");
-        //    }
-
-        //    return sb.ToString();
-        //}
     }
 }

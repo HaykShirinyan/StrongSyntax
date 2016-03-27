@@ -68,7 +68,7 @@
   <ItemGroup>
     <Compile Include="DeleteTest.cs" />
     <Compile Include="InsertTest.cs" />
-    <Compile Include="QueryTest.cs" />
+    <Compile Include="SelectTest.cs" />
     <Compile Include="Resources\DbInitializer.cs" />
     <Compile Include="Resources\DTOs\InvItemDTO.cs" />
     <Compile Include="Resources\DTOs\UnitOfMeasureDTO.cs" />

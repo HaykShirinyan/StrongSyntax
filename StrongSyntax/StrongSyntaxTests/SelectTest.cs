@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace StrongSyntaxTests
 {
     [TestClass]
-    public class QueryTest : TestBase
+    public class SelectTest : TestBase
     {
         private InvItemDTO MapToDTO(InvItem model)
         {
@@ -190,6 +190,39 @@ namespace StrongSyntaxTests
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
             Assert.IsTrue(items.Count == rowsToTake, "Returned wrong number of rows.");
+        }
+
+        private ICompleteQuery GetSubSelect()
+        {
+            var items = Syntax
+                .GetQuery()
+                .Select(
+                   "InvItems.ID"
+                   , "InvItems.Code"
+                   , "InvItems.Name"
+                   , "InvItems.Description"
+                   , "InvItems.UnitPrice"
+               ).From("InvItems");
+
+            return items;
+        }
+
+        [TestMethod]
+        public async Task SubSelect()
+        {
+            var subSelect = GetSubSelect();
+
+            var items = await Syntax
+                .GetQuery()
+                .Select(
+                    "I.ID AS [InvItems.ID]"
+                    , "I.Code AS [InvItems.Code]"
+                    , "I.UnitPrice AS [InvItems.UnitPrice]"
+                ).From(subSelect, "I")
+                .PrepareReader<InvItem>()
+                .ReadAsync();
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
         }
     }
 }

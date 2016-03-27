@@ -14,5 +14,7 @@ namespace StrongSyntax
         /// <param name="tableName">Table name to add with from clause.</param>
         /// <returns></returns>
         IFromClause From(string tableName);
+
+        IFromClause From(ICompleteQuery subSelect, string alias);
     }
 }

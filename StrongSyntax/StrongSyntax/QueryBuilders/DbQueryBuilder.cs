@@ -7,115 +7,31 @@ using System.Text;
 
 namespace StrongSyntax.QueryBuilders
 {
-    class DbQueryBuilder : IDynamicQuery, ISelectClause, IFromClause, IWhereClause, IGroupByClause, IOrderByClause, IOffsetClause, IFetchClause
+    class DbQueryBuilder : QueryBuilderBase, IDynamicQuery, ISelectClause, IFromClause, IWhereClause, IGroupByClause, IOrderByClause, IOffsetClause, IFetchClause
     {
-        protected StringBuilder _query = new StringBuilder();
-        protected Syntax _syntax;
-        protected string[] _select;
-        protected List<SqlParameter> _paramList = new List<SqlParameter>();
-
-        public IReadOnlyCollection<SqlParameter> SqlParameters
-        {
-            get
-            {
-                return _paramList;
-            }
-        }
-
-        public string ConnectionString
-        {
-            get
-            {
-                return _syntax.ConnectionString;
-            }
-        }
-
-        public int Timeout
-        {
-            get
-            {
-                if (_syntax.Timout > 0)
-                {
-                    return _syntax.Timout;
-                }
-
-                return 30000;
-            }
-        }
-
-        public string Query
-        {
-            get
-            {
-                return _query.ToString();
-            }
-        }
-
         public DbQueryBuilder(Syntax syntax)
+            : base(syntax)
         {
-            _syntax = syntax;
-        }
-
-        protected void CheckNullException(string arg, string argName)
-        {
-            if (string.IsNullOrEmpty(arg))
-            {
-                throw new ArgumentNullException(argName);
-            }
-        }
-
-        protected StringBuilder CreateList(string[] selector)
-        {
-            return CreateList(selector, false);
-        }
-
-        private void AddAlias(StringBuilder sb, string s, bool autoAlias)
-        {
-            if (autoAlias && s.IndexOf(" AS ", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                sb.AppendFormat(" AS [{0}]", s);
-            }
-        }
-
-        protected StringBuilder CreateList(string[] selector, bool autoAlias)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("\t")
-                .Append(selector[0]);
-
-            AddAlias(sb, selector[0], autoAlias);
-
-            for (int i = 1; i < selector.Length; i++)
-            {
-                sb.AppendLine()
-                    .Append("\t,")
-                    .Append(selector[i]);
-
-                AddAlias(sb, selector[i], autoAlias);
-            }
-
-            return sb;
         }
 
         public ISelectClause Select(params string[] selector)
         {
-            _select = selector;
+            this._select = selector;
 
-            _query.AppendLine("SELECT");
+            this._query.AppendLine("SELECT");
 
-            var sb = CreateList(_select, true);
+            var sb = this.CreateList(_select, true);
 
-            _query.AppendLine(sb.ToString());
+            this._query.AppendLine(sb.ToString());
 
             return this;
         }
 
         public IFromClause From(string tableName)
         {
-            CheckNullException(tableName, "tableName");
+            this.CheckNullException(tableName, "tableName");
 
-            _query.AppendFormat("FROM {0}", tableName)
+            this._query.AppendFormat("FROM {0}", tableName)
                 .AppendLine();
 
             return this;
@@ -123,10 +39,10 @@ namespace StrongSyntax.QueryBuilders
 
         private IFromClause Join(string join, string tableName, string condition)
         {
-            CheckNullException(tableName, "tableName");
-            CheckNullException(condition, "condition");
+            this.CheckNullException(tableName, "tableName");
+            this.CheckNullException(condition, "condition");
 
-            _query.AppendFormat("{0} JOIN {1}", join, tableName)
+            this._query.AppendFormat("{0} JOIN {1}", join, tableName)
                 .AppendLine()
                 .AppendFormat("    ON {0}", condition)
                 .AppendLine();
@@ -151,7 +67,7 @@ namespace StrongSyntax.QueryBuilders
 
         private void ValidateWhereClause(string filter, int paramCount, object[] values)
         {
-            CheckNullException(filter, "filter");
+            this.CheckNullException(filter, "filter");
 
             if (paramCount != values.Length)
             {
@@ -167,10 +83,10 @@ namespace StrongSyntax.QueryBuilders
 
             for (int i = 0; i < values.Length; i++)
             {
-                _paramList.Add(new SqlParameter("@" + i.ToString(), values[i]));
+                this._paramList.Add(new SqlParameter("@" + i.ToString(), values[i]));
             }
 
-            _query.AppendFormat("WHERE {0}", filter)
+            this._query.AppendFormat("WHERE {0}", filter)
                 .AppendLine();
 
             return this;
@@ -178,22 +94,22 @@ namespace StrongSyntax.QueryBuilders
 
         public IGroupByClause GroupBy(params string[] groupings)
         {
-            _query.AppendLine("GROUP BY");
+            this._query.AppendLine("GROUP BY");
 
-            var groupBy = CreateList(groupings);
+            var groupBy = this.CreateList(groupings);
 
-            _query.AppendLine(groupBy.ToString());
+            this._query.AppendLine(groupBy.ToString());
 
             return this;
         }
 
         private IOrderByClause OrderBy(string order, params string[] orderList)
         {
-            _query.AppendLine("ORDER BY");
+            this._query.AppendLine("ORDER BY");
 
             var sb = this.CreateList(orderList);
 
-            _query.Append(sb.ToString())
+            this._query.Append(sb.ToString())
                 .Append(" ")
                 .AppendLine(order);
 
@@ -212,7 +128,7 @@ namespace StrongSyntax.QueryBuilders
 
         public IOffsetClause Offset(int rowsToSkip)
         {
-            _query.AppendFormat("OFFSET {0} ROWS", rowsToSkip)
+            this._query.AppendFormat("OFFSET {0} ROWS", rowsToSkip)
                 .AppendLine();
 
             return this;
@@ -220,7 +136,7 @@ namespace StrongSyntax.QueryBuilders
 
         public IFetchClause Fetch(int rowsToTake)
         {
-            _query.AppendFormat("FETCH NEXT {0} ROWS ONLY", rowsToTake)
+            this._query.AppendFormat("FETCH NEXT {0} ROWS ONLY", rowsToTake)
                 .AppendLine();
 
             return this;
@@ -232,16 +148,16 @@ namespace StrongSyntax.QueryBuilders
             return new DbQueryReader<TEntity>(this);
         }
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder(_query.ToString());
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder(_query.ToString());
 
-            foreach(var s in _select)
-            {
-                sb.Replace(string.Format(" AS [{0}]", s), "");
-            }
+        //    foreach(var s in _select)
+        //    {
+        //        sb.Replace(string.Format(" AS [{0}]", s), "");
+        //    }
 
-            return sb.ToString();
-        }
+        //    return sb.ToString();
+        //}
     }
 }

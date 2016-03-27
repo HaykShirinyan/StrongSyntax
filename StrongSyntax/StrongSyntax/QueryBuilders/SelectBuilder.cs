@@ -52,7 +52,7 @@ namespace StrongSyntax.QueryBuilders
             _query.AppendLine("FROM")
                 .AppendLine("(")
                 .Append(subSelect.ToString())
-                .AppendFormat(") AS {0}", alias) 
+                .AppendFormat(") AS [{0}]", alias) 
                 .AppendLine();
 
             return this;

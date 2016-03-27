@@ -15,6 +15,12 @@ namespace StrongSyntax
         /// <returns></returns>
         IFromClause From(string tableName);
 
+        /// <summary>
+        /// Appends a from clause to the query.
+        /// </summary>
+        /// <param name="subSelect">Subselect to us in from clause.</param>
+        /// <param name="alias">Name of the subselect.</param>
+        /// <returns></returns>
         IFromClause From(ICompleteQuery subSelect, string alias);
     }
 }

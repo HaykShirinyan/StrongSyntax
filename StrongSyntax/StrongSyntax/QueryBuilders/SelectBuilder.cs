@@ -39,8 +39,8 @@ namespace StrongSyntax.QueryBuilders
 
         private void ValidatSubselect(ICompleteQuery subSelect, string alias)
         {
-            this.CheckNullException(alias, "alias");
             this.CheckNullException(subSelect, "subSelect");
+            this.CheckNullException(alias, "alias");
         }
 
         public IFromClause From(ICompleteQuery subSelect, string alias)
@@ -49,10 +49,10 @@ namespace StrongSyntax.QueryBuilders
 
             this._paramList.AddRange(subSelect.SqlParameters);
 
-            _query.AppendLine("FROM")
+            this._query.AppendLine("FROM")
                 .AppendLine("(")
                 .Append(subSelect.ToString())
-                .AppendFormat(") AS [{0}]", alias) 
+                .AppendFormat(") AS [{0}]", alias)
                 .AppendLine();
 
             return this;
@@ -71,9 +71,33 @@ namespace StrongSyntax.QueryBuilders
             return this;
         }
 
+        private IFromClause Join(string join, ICompleteQuery subSelect, string condition, string alias)
+        {
+            ValidatSubselect(subSelect, alias);
+            this.CheckNullException(condition, "condition");
+
+            this._paramList.AddRange(subSelect.SqlParameters);
+
+            this._query.AppendFormat("{0} JOIN", join)
+                .AppendLine()
+                .AppendLine("(")
+                .AppendFormat("\t{0}", subSelect.ToString())
+                .AppendFormat(") AS {0}", alias)
+                .AppendLine()
+                .AppendFormat("\tON {0}", condition)
+                .AppendLine();
+
+            return this;
+        }
+
         public IFromClause LeftJoin(string tableName, string condition)
         {
             return Join("LEFT OUTER", tableName, condition);
+        }
+
+        public IFromClause LeftJoin(ICompleteQuery subSelect, string condition, string alias)
+        {
+            return Join("LEFT OUTER", subSelect, condition, alias);
         }
 
         public IFromClause RightJoin(string tableName, string condition)
@@ -81,9 +105,19 @@ namespace StrongSyntax.QueryBuilders
             return Join("RIGHT OUTER", tableName, condition);
         }
 
+        public IFromClause RightJoin(ICompleteQuery subSelect, string condition, string alias)
+        {
+            return Join("RIGHT OUTER", subSelect, condition, alias);
+        }
+
         public IFromClause InnerJoin(string tableName, string condition)
         {
             return Join("INNER", tableName, condition);
+        }
+
+        public IFromClause InnerJoin(ICompleteQuery subSelect, string condition, string alias)
+        {
+            return Join("INNER", subSelect, condition, alias);
         }
 
         private void ValidateWhereClause(string filter, int paramCount, object[] values)

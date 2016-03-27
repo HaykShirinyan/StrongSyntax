@@ -39,7 +39,7 @@ namespace StrongSyntaxTests
                     , "InvItems.Code"
                     , "InvItems.Name"
                     , "InvItems.Description"
-                    ,"UnitOfMeasures.ID"
+                    , "UnitOfMeasures.ID"
                     , "UnitOfMeasures.Name"
                 ).From("InvItems")
                 .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
@@ -202,6 +202,7 @@ namespace StrongSyntaxTests
                    , "InvItems.Name"
                    , "InvItems.Description"
                    , "InvItems.UnitPrice"
+                   , "InvItems.UOMID"
                ).From("InvItems");
 
             return items;
@@ -223,6 +224,46 @@ namespace StrongSyntaxTests
                 .ReadAsync();
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
+        }
+
+        [TestMethod]
+        public void SubSelectLeftJoin()
+        {
+            var subSelect = GetSubSelect();
+
+            var items = Syntax.GetQuery()
+                .Select(
+                    "InvItems.ID"
+                    , "InvItems.Code"
+                    , "UnitOfMeasures.ID"
+                    , "UnitOfMeasures.Code"
+                ).From("UnitOfMeasures")
+                .LeftJoin(subSelect, "InvItems.UOMID = UnitOfMeasures.ID", "InvItems")
+                .PrepareReader<InvItem>()
+                .Read();
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.Any(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");
+        }
+
+        [TestMethod]
+        public void SubSelectInnerJoin()
+        {
+            var subSelect = GetSubSelect();
+
+            var items = Syntax.GetQuery()
+                .Select(
+                    "InvItems.ID"
+                    , "InvItems.Code"
+                    , "UnitOfMeasures.ID"
+                    , "UnitOfMeasures.Code"
+                ).From("UnitOfMeasures")
+                .InnerJoin(subSelect, "InvItems.UOMID = UnitOfMeasures.ID", "InvItems")
+                .PrepareReader<InvItem>()
+                .Read();
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");
         }
     }
 }

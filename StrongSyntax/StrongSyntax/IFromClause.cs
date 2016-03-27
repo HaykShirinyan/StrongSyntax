@@ -12,25 +12,52 @@ namespace StrongSyntax
         /// Appends a left join to the query.
         /// </summary>
         /// <param name="tableName">Table name to join.</param>
-        /// <param name="condition">Condition on which to join the table,</param>
+        /// <param name="condition">Condition on which to join the table</param>
         /// <returns></returns>
         IFromClause LeftJoin(string tableName, string condition);
+
+        /// <summary>
+        /// Appends a left join to the query.
+        /// </summary>
+        /// <param name="subSelect">Subselect to join</param>
+        /// <param name="condition">Condition on which to join the table</param>
+        /// <param name="alias">Name of the join.</param>
+        /// <returns></returns>
+        IFromClause LeftJoin(ICompleteQuery subSelect, string condition, string alias);
 
         /// <summary>
         /// Appends a right join to the query.
         /// </summary>
         /// <param name="tableName">Table name to join.</param>
-        /// <param name="condition">Condition on which to join the table,</param>
+        /// <param name="condition">Condition on which to join the table</param>
         /// <returns></returns>
         IFromClause RightJoin(string tableName, string condition);
+
+        /// <summary>
+        /// Appends a right join to the query.
+        /// </summary>
+        /// <param name="subSelect">Subselect to join</param>
+        /// <param name="condition">Condition on which to join the table</param>
+        /// <param name="alias">Name of the join.</param>
+        /// <returns></returns>
+        IFromClause RightJoin(ICompleteQuery subSelect, string condition, string alias);
 
         /// <summary>
         /// Appends an inner join to the query.
         /// </summary>
         /// <param name="tableName">Table name to join.</param>
-        /// <param name="condition">Condition on which to join the table,</param>
+        /// <param name="condition">Condition on which to join the table</param>
         /// <returns></returns>
         IFromClause InnerJoin(string tableName, string condition);
+
+        /// <summary>
+        /// Appends an inner join to the query.
+        /// </summary>
+        /// <param name="subSelect">Subselect to join</param>
+        /// <param name="condition">Condition on which to join the table</param>
+        /// <param name="alias">Name of the join.</param>
+        /// <returns></returns>
+        IFromClause InnerJoin(ICompleteQuery subSelect, string condition, string alias);
 
         /// <summary>
         /// Appends a where clause to the query.

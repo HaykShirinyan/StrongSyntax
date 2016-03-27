@@ -157,7 +157,7 @@ That will generate:
   ) AS I
 ```
 
-However, if you use the generated SQL query to read and populate your POCO classes with the help of StrongSyntax buid in database reader, that operation will fail because StrongSyntax won't be able to map the return ed column to you POCO class. In that case you have to do the follofing:
+However, if you use the generated SQL query to read and populate your POCO classes with the help of StrongSyntax buid in database reader, that operation will fail because StrongSyntax won't be able to map the returned columns to you POCO class properties. In that case you have to do the following:
 
 ```C#
   // This will work fine. You need to do this only when using subselects.

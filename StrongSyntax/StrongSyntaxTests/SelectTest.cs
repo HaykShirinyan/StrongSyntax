@@ -51,9 +51,9 @@ namespace StrongSyntaxTests
         }
 
         [TestMethod]
-        public void Project()
+        public async Task Project()
         {
-            var items = Syntax
+            var items = await Syntax
                 .GetQuery()
                 .Select(
                     "InvItems.ID"
@@ -65,7 +65,7 @@ namespace StrongSyntaxTests
                 ).From("InvItems")
                 .LeftJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
                 .PrepareReader<InvItem>()
-                .Project(MapToDTO);
+                .ProjectAsync(MapToDTO);
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
             Assert.IsTrue(items.Any(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");

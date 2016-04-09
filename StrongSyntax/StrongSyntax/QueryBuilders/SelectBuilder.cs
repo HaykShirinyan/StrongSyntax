@@ -95,8 +95,22 @@ namespace StrongSyntax.QueryBuilders
             return Join("LEFT OUTER", tableName, condition);
         }
 
+        public IFromClause LeftJoin(string tableName, string condition, params object[] values)
+        {
+            CreateFilterParams(condition, values);
+
+            return Join("LEFT OUTER", tableName, condition);
+        }
+
         public IFromClause LeftJoin(ICompleteQuery subSelect, string condition, string alias)
         {
+            return Join("LEFT OUTER", subSelect, condition, alias);
+        }
+
+        public IFromClause LeftJoin(ICompleteQuery subSelect, string condition, string alias, params object[] values)
+        {
+            CreateFilterParams(condition, values);
+
             return Join("LEFT OUTER", subSelect, condition, alias);
         }
 
@@ -105,8 +119,22 @@ namespace StrongSyntax.QueryBuilders
             return Join("RIGHT OUTER", tableName, condition);
         }
 
+        public IFromClause RightJoin(string tableName, string condition, params object[] values)
+        {
+            CreateFilterParams(condition, values);
+
+            return Join("RIGHT OUTER", tableName, condition);
+        }
+
         public IFromClause RightJoin(ICompleteQuery subSelect, string condition, string alias)
         {
+            return Join("RIGHT OUTER", subSelect, condition, alias);
+        }
+
+        public IFromClause RightJoin(ICompleteQuery subSelect, string condition, string alias, params object[] values)
+        {
+            CreateFilterParams(condition, values);
+
             return Join("RIGHT OUTER", subSelect, condition, alias);
         }
 
@@ -115,9 +143,23 @@ namespace StrongSyntax.QueryBuilders
             return Join("INNER", tableName, condition);
         }
 
+        public IFromClause InnerJoin(string tableName, string condition, params object[] values)
+        {
+            CreateFilterParams(condition, values);
+
+            return Join("INNER OUTER", tableName, condition);
+        }
+
         public IFromClause InnerJoin(ICompleteQuery subSelect, string condition, string alias)
         {
             return Join("INNER", subSelect, condition, alias);
+        }
+
+        public IFromClause InnerJoin(ICompleteQuery subSelect, string condition, string alias, params object[] values)
+        {
+            CreateFilterParams(condition, values);
+
+            return Join("INNER OUTER", subSelect, condition, alias);
         }
 
         private void ValidateWhereClause(string filter, int paramCount, object[] values)
@@ -130,7 +172,7 @@ namespace StrongSyntax.QueryBuilders
             }
         }
 
-        public IWhereClause Where(string filter, params object[] values)
+        private void CreateFilterParams(string filter, object[] values)
         {
             int paramCount = filter.Count(s => s == '@');
 
@@ -140,6 +182,11 @@ namespace StrongSyntax.QueryBuilders
             {
                 this._paramList.Add(new SqlParameter("@" + this._paramList.Count.ToString(), val));
             }
+        }
+
+        public IWhereClause Where(string filter, params object[] values)
+        {
+            CreateFilterParams(filter, values);
 
             this._query.AppendFormat("WHERE {0}", filter)
                 .AppendLine();

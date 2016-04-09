@@ -9,8 +9,6 @@ namespace StrongSyntaxTests.Resources.Models
 
         public string Description { get; set; }
 
-        public int Status { get; set; }
-
         public decimal? Quantity { get; set; }
 
         public decimal? OnSoQty { get; set; }

@@ -116,6 +116,32 @@ namespace StrongSyntaxTests
         }
 
         [TestMethod]
+        public void JoinWithParams()
+        {
+            decimal? unitPrice = 50.00M;
+
+            var items = Syntax
+                .GetQuery()
+                .Select(
+                    "InvItems.ID"
+                    , "InvItems.Code"
+                    , "InvItems.Name"
+                    , "InvItems.Description"
+                    , "InvItems.UnitPrice"
+                    , "UnitOfMeasures.ID"
+                    , "UnitOfMeasures.Name"
+                ).From("InvItems")
+                .LeftJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID AND UnitOfMeasures.[Status] = @0", RecordStatus.Active)
+                .Where("InvItems.UnitPrice > @1", unitPrice)
+                .PrepareReader<InvItem>()
+                .Read();
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.Any(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");
+            Assert.IsTrue(items.All(i => i.ID != null && i.UnitPrice > unitPrice), "Where clause didn't work.");
+        }
+
+        [TestMethod]
         public void OrderBy()
         {
             var items = Syntax
@@ -203,6 +229,7 @@ namespace StrongSyntaxTests
                    , "InvItems.Description"
                    , "InvItems.UnitPrice"
                    , "InvItems.UOMID"
+                   , "InvItems.[Status]"
                ).From("InvItems");
 
             return items;
@@ -264,6 +291,31 @@ namespace StrongSyntaxTests
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
             Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");
+        }
+
+        [TestMethod]
+        public void SubSelectJoinWithParams()
+        {
+            decimal unitPrice = 50.00M;
+
+            var subSelect = GetSubSelect();
+
+            var items = Syntax.GetQuery()
+                .Select(
+                    "InvItems.ID"
+                    , "InvItems.Code"
+                    , "InvItems.UnitPrice"
+                    , "UnitOfMeasures.ID"
+                    , "UnitOfMeasures.Code"
+                ).From("UnitOfMeasures")
+                .LeftJoin(subSelect, "InvItems.UOMID = UnitOfMeasures.ID AND InvItems.[Status] = @0", "InvItems", RecordStatus.Active)
+                .Where("InvItems.UnitPrice > @1", unitPrice)
+                .PrepareReader<InvItem>()
+                .Read();
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.Any(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");
+            Assert.IsTrue(items.All(i => i.ID != null && i.UnitPrice > unitPrice), "Where clause didn't work.");
         }
     }
 }

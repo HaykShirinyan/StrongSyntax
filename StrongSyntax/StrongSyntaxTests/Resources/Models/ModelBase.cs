@@ -19,5 +19,23 @@ namespace StrongSyntaxTests.Resources.Models
         [StringLength(100)]
         [Index("IX_Code_UK", IsUnique = true)]
         public string Code { get; set; }
+
+        /// <summary>
+        /// In case if we don't delete data from DB for auditing purposes, we set appropriate status.
+        /// </summary>
+        public RecordStatus Status { get; set; }
+
+        public ModelBase()
+        {
+            this.Status = RecordStatus.Active;
+        }
     }
+
+    public enum RecordStatus
+    {
+        Active,
+        Inactive,
+        Deleted
+    }
+       
 }

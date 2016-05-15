@@ -8,6 +8,6 @@ namespace StrongSyntax
         /// <summary>
         /// Gets the SQL parameters that are associated with the generated query.
         /// </summary>
-        IReadOnlyCollection<SqlParameter> SqlParameters { get; }
+        ICollection<SqlParameter> SqlParameters { get; }
     }
 }

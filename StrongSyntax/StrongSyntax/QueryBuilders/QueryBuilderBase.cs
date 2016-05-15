@@ -14,7 +14,7 @@ namespace StrongSyntax.QueryBuilders
         protected string[] _select;
         protected List<SqlParameter> _paramList = new List<SqlParameter>();
 
-        public IReadOnlyCollection<SqlParameter> SqlParameters
+        public ICollection<SqlParameter> SqlParameters
         {
             get
             {

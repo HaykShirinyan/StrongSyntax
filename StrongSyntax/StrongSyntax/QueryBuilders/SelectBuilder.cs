@@ -27,6 +27,13 @@ namespace StrongSyntax.QueryBuilders
             return this;
         }
 
+        public ISelectClause SubSelect(params string[] selector)
+        {
+            SubSelectBuilder subSelect = new SubSelectBuilder(this._syntax, this);
+
+            return subSelect.Select(selector);
+        }
+
         public IFromClause From(string tableName)
         {
             this.CheckNullException(tableName, "tableName");
@@ -147,7 +154,7 @@ namespace StrongSyntax.QueryBuilders
         {
             CreateFilterParams(condition, values);
 
-            return Join("INNER OUTER", tableName, condition);
+            return Join("INNER", tableName, condition);
         }
 
         public IFromClause InnerJoin(ICompleteQuery subSelect, string condition, string alias)
@@ -248,6 +255,17 @@ namespace StrongSyntax.QueryBuilders
             where TEntity : class, new()
         {
             return new DbQueryReader<TEntity>(this);
+        }
+
+        public virtual string ToString(string alias)
+        {
+            this.CheckNullException(alias, "alias");
+
+            this._query.Insert(0, "(");
+
+            this._query.AppendFormat(") AS [{0}]", alias);
+
+            return this.ToString();
         }
     }
 }

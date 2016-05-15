@@ -34,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\StrongSyntax.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -79,6 +80,7 @@
     <Compile Include="QueryBuilders\QueryBuilderBase.cs" />
     <Compile Include="QueryBuilders\StrongQueryBuilder.cs" />
     <Compile Include="DbHelpers\DmlQueryHelper.cs" />
+    <Compile Include="QueryBuilders\SubSelectBuilder.cs" />
     <Compile Include="QueryBuilders\UpdateBuilder.cs" />
     <Compile Include="SetClause.cs" />
     <Compile Include="Syntax.cs" />

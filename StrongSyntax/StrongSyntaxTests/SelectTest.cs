@@ -32,6 +32,22 @@ namespace StrongSyntaxTests
         [TestMethod]
         public void Select()
         {
+            //var items = Syntax
+            //    .GetQuery()
+            //    .Select(
+            //        "InvItems.ID"
+            //        , "InvItems.Code"
+            //        , "InvItems.Name"
+            //        , "InvItems.Description"
+            //        , "UnitOfMeasures.ID"
+            //        , "UnitOfMeasures.Name"
+            //    ).From("InvItems")
+            //    .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
+            //    .PrepareReader<InvItem>()
+            //    .Read();
+
+            //Assert.IsTrue(items.Count > 0, "No records were returned.");
+            //Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty), "Inner join didn't work.");
             var items = Syntax
                 .GetQuery()
                 .Select(
@@ -43,11 +59,9 @@ namespace StrongSyntaxTests
                     , "UnitOfMeasures.Name"
                 ).From("InvItems")
                 .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
-                .PrepareReader<InvItem>()
-                .Read();
+                .ToString("Select 1");
 
-            Assert.IsTrue(items.Count > 0, "No records were returned.");
-            Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty), "Inner join didn't work.");
+            Assert.IsNotNull(items);
         }
 
         [TestMethod]
@@ -153,10 +167,9 @@ namespace StrongSyntaxTests
                    , "InvItems.Description"
                    , "InvItems.UnitPrice"
                ).From("InvItems")
-               .OrderBy(
-                    "InvItems.UnitPrice"
-                ).PrepareReader<InvItem>()
-                .Read();
+               .OrderBy("InvItems.UnitPrice")
+               .PrepareReader<InvItem>()
+               .Read();
 
             var first = items.FirstOrDefault();
             var last = items.ElementAt(items.Count - 1);
@@ -204,12 +217,11 @@ namespace StrongSyntaxTests
                    , "InvItems.Description"
                    , "InvItems.UnitPrice"
                ).From("InvItems")
-               .OrderBy(
-                    "InvItems.Code"
-                ).Offset(rowsToSkip)
-                .Fetch(rowsToTake)
-                .PrepareReader<InvItem>()
-                .ReadAsync();
+               .OrderBy("InvItems.Code")
+               .Offset(rowsToSkip)
+               .Fetch(rowsToTake)
+               .PrepareReader<InvItem>()
+               .ReadAsync();
 
             var first = items.FirstOrDefault();
             var last = items.ElementAt(items.Count - 1);
@@ -251,6 +263,28 @@ namespace StrongSyntaxTests
                 .ReadAsync();
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
+        }
+
+        [TestMethod]
+        public void SelectClauseSubSelect()
+        {
+            var query = Syntax.GetQuery();
+
+            var items = query
+                .Select(
+                    "InvItems.ID"
+                    , "InvItems.Code"
+                    , query.SubSelect("ISNULL(SUM(OnHandQty), 0)")
+                        .From("WarehouseItems")
+                        .Where("WarehouseID = @0", "D8224F06-ABFE-E511-8298-40E23013A0E1")
+                        .ToString("InvItems.InWarehouseQty")
+                ).From("InvItems")
+                .Where("InvItems.[Status] = @1", RecordStatus.Active)
+                .PrepareReader<InvItem>()
+                .Read();
+
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.All(i => i.InWarehouseQty != null), "Subselect didn't work.");
         }
 
         [TestMethod]

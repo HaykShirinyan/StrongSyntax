@@ -60,7 +60,8 @@ namespace StrongSyntaxTests
 
             var rows = into.Execute();
 
-            Assert.AreEqual(rows, 100, "No records were inserted.");
+            Assert.AreNotEqual(0, rows, "No records were inserted.");
+            Assert.AreEqual(rows, 100, "Wrong number of records were inserted.");
         }
     }
 }

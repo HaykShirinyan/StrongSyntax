@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntaxTests.Resources.Models
 {
-    class Warehouse : ModelBase
+    public class Warehouse : ModelBase
     {
         public string Name { get; set; }
 

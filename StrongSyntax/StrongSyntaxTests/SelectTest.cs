@@ -32,22 +32,6 @@ namespace StrongSyntaxTests
         [TestMethod]
         public void Select()
         {
-            //var items = Syntax
-            //    .GetQuery()
-            //    .Select(
-            //        "InvItems.ID"
-            //        , "InvItems.Code"
-            //        , "InvItems.Name"
-            //        , "InvItems.Description"
-            //        , "UnitOfMeasures.ID"
-            //        , "UnitOfMeasures.Name"
-            //    ).From("InvItems")
-            //    .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
-            //    .PrepareReader<InvItem>()
-            //    .Read();
-
-            //Assert.IsTrue(items.Count > 0, "No records were returned.");
-            //Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty), "Inner join didn't work.");
             var items = Syntax
                 .GetQuery()
                 .Select(
@@ -55,13 +39,16 @@ namespace StrongSyntaxTests
                     , "InvItems.Code"
                     , "InvItems.Name"
                     , "InvItems.Description"
+                    , "InvItems.Status"
                     , "UnitOfMeasures.ID"
                     , "UnitOfMeasures.Name"
                 ).From("InvItems")
                 .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
-                .ToString("Select 1");
+                .PrepareReader<InvItem>()
+                .Read();
 
-            Assert.IsNotNull(items);
+            Assert.IsTrue(items.Count > 0, "No records were returned.");
+            Assert.IsTrue(items.All(i => i.ID != null && i.UOM.ID != Guid.Empty), "Inner join didn't work.");
         }
 
         [TestMethod]
@@ -82,7 +69,7 @@ namespace StrongSyntaxTests
                 .ProjectAsync(MapToDTO);
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
-            Assert.IsTrue(items.Any(i => i.ID != null && i.UOM.ID != Guid.Empty), "Left join didn't work.");
+            Assert.IsTrue(items.Any(i => i.ID != Guid.Empty && i.UOM != null ? i.UOM.ID != Guid.Empty : true), "Left join didn't work.");
         }
 
         [TestMethod]
@@ -102,7 +89,7 @@ namespace StrongSyntaxTests
                    , "UnitOfMeasures.Name"
                ).From("InvItems")
                .LeftJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
-               .Where("InvItems.UnitPrice > @0 AND InvItems.Name LIKE @1", unitPrice, "%17")
+               .Where("InvItems.UnitPrice > @0 AND InvItems.Name LIKE @1", unitPrice, "%23%")
                .PrepareReader<InvItem>()
                .Read();
 
@@ -175,7 +162,7 @@ namespace StrongSyntaxTests
             var last = items.ElementAt(items.Count - 1);
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
-            Assert.IsTrue(last.UnitPrice > first.UnitPrice, "Order by failed.");
+            Assert.IsTrue(last.UnitPrice.GetValueOrDefault() > first.UnitPrice.GetValueOrDefault(), "Order by failed.");
         }
 
         [TestMethod]
@@ -199,7 +186,7 @@ namespace StrongSyntaxTests
             var last = items.ElementAt(items.Count - 1);
 
             Assert.IsTrue(items.Count > 0, "No records were returned.");
-            Assert.IsTrue(first.UnitPrice > last.UnitPrice, "Order by failed.");
+            Assert.IsTrue(first.UnitPrice.GetValueOrDefault() > last.UnitPrice.GetValueOrDefault(), "Order by failed.");
         }
 
         [TestMethod]

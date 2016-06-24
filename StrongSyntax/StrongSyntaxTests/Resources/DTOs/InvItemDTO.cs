@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntaxTests.Resources.DTOs
 {
-    class InvItemDTO
+    public class InvItemDTO
     {
         public Guid ID { get; set; }
 

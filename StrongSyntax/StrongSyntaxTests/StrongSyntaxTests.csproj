@@ -80,18 +80,19 @@
     <Compile Include="Resources\TestDbContext.cs" />
     <Compile Include="StrongQueryBuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TempTableTest.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="UpdateTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StrongSyntax\StrongSyntax.csproj">
       <Project>{a80af254-bce7-4f98-ab6a-8e38835f090b}</Project>
       <Name>StrongSyntax</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

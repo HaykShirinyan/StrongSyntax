@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntaxTests.Resources.DTOs
 {
-    class UnitOfMeasureDTO
+    public class UnitOfMeasureDTO
     {
         public Guid ID { get; set; }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntaxTests.Resources.Models
 {
-    class ModelBase
+    public class ModelBase
     {
         [Key]
         [Column(Order = 0)]

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntaxTests.Resources.Models
 {
-    class UnitOfMeasure : ModelBase
+    public class UnitOfMeasure : ModelBase
     {
         public string Name { get; set; }
 

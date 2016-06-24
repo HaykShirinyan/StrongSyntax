@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StrongSyntaxTests.Resources.Models
 {
-    class InvItem : ModelBase
+    public class InvItem : ModelBase
     {      
         public string Name { get; set; }
 

@@ -181,13 +181,13 @@ namespace StrongSyntax.QueryBuilders
 
         private void CreateFilterParams(string filter, object[] values)
         {
-            int paramCount = filter.Count(s => s == '@');
+            int paramCount = filter.Count(s => s == '@');            
 
             ValidateWhereClause(filter, paramCount, values);
 
             foreach (var val in values)
             {
-                this._paramList.Add(new SqlParameter("@" + this._paramList.Count.ToString(), val));
+                this.AddParam(val);
             }
         }
 

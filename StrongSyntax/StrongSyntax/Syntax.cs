@@ -24,6 +24,23 @@ namespace StrongSyntax
             _connectionString = connectionString;
         }
 
+        public ITempTable GetTempTable<TTable>(IEnumerable<TTable> recordList)
+            where TTable : class, new()
+        {
+            return GetTempTable(recordList, true);
+        }
+
+        public ITempTable GetTempTable<TTable>(IEnumerable<TTable> recordList, bool parametrizeQuery)
+            where TTable : class, new()
+        {
+            var tempTable = new TempTable<TTable>();
+
+            tempTable.ParametrizeQuery = parametrizeQuery;
+            tempTable.FillTable(recordList);
+
+            return tempTable;
+        }
+
         public IDynamicQuery GetQuery()
         {
             return new SelectBuilder(this);
@@ -31,7 +48,16 @@ namespace StrongSyntax
 
         public IInsertQuery GetInsert()
         {
-            return new InsertBuilder(this);
+            return GetInsert(true);
+        }
+
+        public IInsertQuery GetInsert(bool parametrizeQuery)
+        {
+            var builder = new InsertBuilder(this);
+
+            builder.ParametrizeQuery = parametrizeQuery;
+
+            return builder;
         }
 
         public IUpdateQuery GetUpdate()

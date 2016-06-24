@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionMethods\PropertyInfoEx.cs" />
+    <Compile Include="QueryBuilders\TempTable.cs" />
+    <Compile Include="ITempTable.cs" />
     <Compile Include="QueryBuilders\DeleteUpdateBase.cs" />
     <Compile Include="ICompleteDml.cs" />
     <Compile Include="ICompleteQuery.cs" />

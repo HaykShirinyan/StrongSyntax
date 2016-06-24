@@ -9,6 +9,8 @@ namespace StrongSyntax.QueryBuilders
 {
     class DmlBase : SelectBuilder
     {
+        public bool ParametrizeQuery { get; set; }
+
         public DmlBase(Syntax syntax) 
             : base(syntax)
         {

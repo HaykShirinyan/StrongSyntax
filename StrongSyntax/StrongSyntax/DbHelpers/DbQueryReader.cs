@@ -1,4 +1,5 @@
-﻿using StrongSyntax.QueryBuilders;
+﻿using StrongSyntax.ExtensionMethods;
+using StrongSyntax.QueryBuilders;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,23 +22,11 @@ namespace StrongSyntax.DbHelpers
             _queryBuilder = queryBuilder;
         }
 
-        private bool IsNavigationalProperty(PropertyInfo p)
-        {
-            var type = p.PropertyType;
-
-            if ((type.IsClass) && type != typeof(string))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private string GetColumnName(PropertyInfo p)
         {
             string name = p.Name;
 
-            if (IsNavigationalProperty(p))
+            if (p.IsNavigationalProperty())
             {
                 name = p.PropertyType.Name + p.Name;
             }
@@ -79,8 +68,15 @@ namespace StrongSyntax.DbHelpers
             {
                 Type convertTo = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
 
-                p.SetValue(entity, Convert.ChangeType
-                    (value, convertTo, CultureInfo.InvariantCulture), null);
+                if (convertTo.IsEnum)
+                {
+                    p.SetValue(entity, Enum.ToObject(convertTo, value));
+                }
+                else
+                {
+                    p.SetValue(entity, Convert.ChangeType
+                        (value, convertTo, CultureInfo.InvariantCulture), null);
+                }
             }
         }
 
@@ -146,7 +142,10 @@ namespace StrongSyntax.DbHelpers
                 string name = reader.GetName(i);
                 object value = reader.GetValue(i);
 
-                SetProperty(entity, name, value, props);
+                if (value != null && value != DBNull.Value)
+                {
+                    SetProperty(entity, name, value, props);
+                }                
             }
 
             return entity;

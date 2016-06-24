@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StrongSyntax.DbHelpers;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace StrongSyntax.QueryBuilders
 {
     class UpdateBuilder : DmlBase, IUpdateQuery, IUpdateClause, ISetClause
     {
+        private SetClause _setClause;
+
         public UpdateBuilder(Syntax syntax) 
             : base(syntax)
         {
@@ -30,7 +33,9 @@ namespace StrongSyntax.QueryBuilders
             {
                 values[counter] = string.Format("{0} = @Set{1}", kvp.Key, counter);
 
-                this._paramList.Add(new SqlParameter("@Set" + counter, kvp.Value));
+                var sqlParams = this.AddParam(new SqlParameter("@Set" + counter, kvp.Value));
+
+                setClause.SqlParameters.Add(sqlParams);
 
                 counter++;
             }
@@ -38,10 +43,7 @@ namespace StrongSyntax.QueryBuilders
 
         private void ValidateSetClause(SetClause setClause)
         {
-            if (setClause == null)
-            {
-                throw new ArgumentNullException("setClause");
-            }
+            this.CheckNullException(setClause, "setClause");
 
             if (setClause.Count == 0)
             {
@@ -60,6 +62,52 @@ namespace StrongSyntax.QueryBuilders
             AddSetClause(values, setClause);
 
             _query.AppendLine(this.CreateList(values).ToString());
+
+            _setClause = setClause;
+
+            return this;
+        }
+
+        private void RemoveTempTableParams(string alias)
+        {
+            foreach(var sqlParam in _setClause.SqlParameters)
+            {
+                if (sqlParam.Value.ToString().StartsWith(alias + ".", StringComparison.OrdinalIgnoreCase))
+                {
+                    this._query.Replace(sqlParam.ParameterName, sqlParam.Value.ToString());
+
+                    this._paramList.Remove(sqlParam);
+                }
+            }
+        }
+
+        private void ValidateFromClause(ITempTable tempTable, string alias)
+        {
+            this.CheckNullException(tempTable, "tempTable");
+            this.CheckNullException(alias, "alias");
+        }
+
+        private void AddTempTableQueryToMain(ITempTable tempTable)
+        {
+            this._query.Insert(0, tempTable.ToString());
+
+            foreach (var param in tempTable.SqlParameters)
+            {
+                this.AddParam(param);
+            }
+        }
+
+        public ISetClause From(ITempTable tempTable, string alias)
+        {
+            ValidateFromClause(tempTable, alias);
+
+            AddTempTableQueryToMain(tempTable);
+
+            this._query
+                .AppendFormat("FROM {0} AS [{1}]", tempTable.TableName, alias)
+                .AppendLine();
+
+            RemoveTempTableParams(alias);
 
             return this;
         }

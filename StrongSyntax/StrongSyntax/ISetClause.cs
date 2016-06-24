@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StrongSyntax.DbHelpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,7 @@ namespace StrongSyntax
         /// <param name="values"></param>
         /// <returns></returns>
         ICompleteDml Where(string filter, params object[] values);
+
+        ISetClause From(ITempTable tempTable, string alias);
     }
 }

@@ -102,7 +102,7 @@ In case if you need to map you Models to ViewModels or DTOs, you can call Projec
          , "UnitOfMeasures.Name"
      ).From("InvItems")
      .LeftJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID")
-     .Where("InvItems.UnitPrice > @0 AND InvItems.Name LIKE @1", unitPrice, "%17")
+     .Where("InvItems.UnitPrice > @0 AND InvItems.Name LIKE @1", unitPrice, "%17%")
      .PrepareReader<InvItem>()
      .Project(MapToDTO); //pass our method that does the mapping to the reader.
 ```

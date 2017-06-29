@@ -22,7 +22,7 @@ Build the SQL query:
         , "InvItems.Code"
         , "InvItems.Name"
         , "InvItems.Description"
-        ,"UnitOfMeasures.ID"
+        , "UnitOfMeasures.ID"
         , "UnitOfMeasures.Name"
     ).From("InvItems")
     .InnerJoin("UnitOfMeasures", "UnitOfMeasures.ID = InvItems.UOMID");
@@ -302,5 +302,3 @@ Future goals:
         ,i.Description
     });
 ```
-
-Any ideas and suggenstions will be welcome, so don't hessitate to express your opinion.

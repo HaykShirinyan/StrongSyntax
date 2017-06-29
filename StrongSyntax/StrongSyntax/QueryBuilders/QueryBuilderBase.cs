@@ -57,6 +57,10 @@ namespace StrongSyntax.QueryBuilders
             {
                 return _query;
             }
+            internal set
+            {
+                _query = value;
+            }
         }
 
         public QueryBuilderBase(Syntax syntax)
@@ -113,6 +117,45 @@ namespace StrongSyntax.QueryBuilders
             }
 
             return sb;
+        }
+
+        protected SqlParameter AddParam(string name, object val)
+        {
+            val = val ?? DBNull.Value;
+
+            var sqlParam = new SqlParameter(name, val);
+
+            _paramList.Add(sqlParam);
+
+            return sqlParam;
+        }
+
+        private string GetParamName()
+        {
+            int paramCount = _paramList
+                .Count(p => !p.ParameterName.StartsWith("@Set", StringComparison.OrdinalIgnoreCase)
+                    && !p.ParameterName.StartsWith("@Ins", StringComparison.OrdinalIgnoreCase)
+                );
+
+            return "@" + paramCount;
+        }
+
+        protected SqlParameter AddParam(object val)
+        {
+            val = val ?? DBNull.Value;
+
+            var sqlParam = new SqlParameter(GetParamName(), val);
+
+            _paramList.Add(sqlParam);
+
+            return sqlParam;
+        }
+
+        protected SqlParameter AddParam(SqlParameter param)
+        {
+            _paramList.Add(param);
+
+            return param;
         }
 
         public override string ToString()

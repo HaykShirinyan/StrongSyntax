@@ -1,6 +1,7 @@
 ﻿using StrongSyntax.QueryBuilders;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -10,14 +11,14 @@ namespace StrongSyntax.DbHelpers
 {
     class DmlQueryHelper
     {
-        private SelectBuilder _queryBuilder;
+        private QueryBuilderBase _queryBuilder;
 
-        public DmlQueryHelper(SelectBuilder queryBuilder)
+        public DmlQueryHelper(QueryBuilderBase queryBuilder)
         {
             _queryBuilder = queryBuilder;
         }
 
-        private SqlCommand CreateCommand(SqlConnection conn)
+        private SqlCommand CreateCommand(SqlConnection conn, SqlTransaction transaction)
         {
             SqlCommand command = new SqlCommand();
 
@@ -26,10 +27,15 @@ namespace StrongSyntax.DbHelpers
             command.CommandTimeout = _queryBuilder.Timeout;
             command.Parameters.AddRange(_queryBuilder.SqlParameters.ToArray());
 
+            if (transaction != null)
+            {
+                command.Transaction = transaction;
+            }
+
             return command;
         }
 
-        public int Execute()
+        public int Execute(DbTransaction transaction)
         {
             int rowsAffected = 0;
 
@@ -37,7 +43,7 @@ namespace StrongSyntax.DbHelpers
             {
                 conn.Open();
 
-                using (var command = CreateCommand(conn))
+                using (var command = CreateCommand(conn, transaction as SqlTransaction))
                 {
                     rowsAffected = command.ExecuteNonQuery();
                 }
@@ -46,7 +52,7 @@ namespace StrongSyntax.DbHelpers
             return rowsAffected;
         }
 
-        public async Task<int> ExecuteAsync()
+        public async Task<int> ExecuteAsync(DbTransaction transaction)
         {
             int rowsAffected = 0;
 
@@ -54,7 +60,7 @@ namespace StrongSyntax.DbHelpers
             {
                 conn.Open();
 
-                using (var command = CreateCommand(conn))
+                using (var command = CreateCommand(conn, transaction as SqlTransaction))
                 {
                     rowsAffected = await command.ExecuteNonQueryAsync();
                 }

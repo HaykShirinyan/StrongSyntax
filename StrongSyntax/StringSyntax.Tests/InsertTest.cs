@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace StrongSyntaxTests
+namespace StrongSyntax.Tests
 {
     [TestClass]
     public class InsertTest : TestBase
@@ -33,7 +33,7 @@ namespace StrongSyntaxTests
         [TestMethod]
         public void InsertLoop()
         {
-            var query = Syntax.GetInsert();
+            var query = Syntax.GetInsert(false);
 
             var into = query
                 .Insert

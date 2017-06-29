@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace StrongSyntaxTests
+namespace StrongSyntax.Tests
 {
     [TestClass]
     public class DeleteTest : TestBase

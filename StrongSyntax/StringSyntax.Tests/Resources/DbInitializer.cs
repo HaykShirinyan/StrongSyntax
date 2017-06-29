@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity;
-using StrongSyntaxTests.Resources.Models;
+using StrongSyntax.Tests.Resources.Models;
 
-namespace StrongSyntaxTests.Resources
+namespace StrongSyntax.Tests.Resources
 {
-    class DbInitializer : DropCreateDatabaseIfModelChanges<TestDbContext>
+    class DbInitializer
     {
         private ICollection<InvItem> InitInventory(TestDbContext context)
         {
@@ -72,7 +71,7 @@ namespace StrongSyntaxTests.Resources
                         InvItemID = item.ID,
                         OnHandQty = r.Next(50)
                     }).ToList();
-
+                
                 warehouseList.Add(w);
                 context.Warehouses.Add(w);
             }
@@ -80,14 +79,15 @@ namespace StrongSyntaxTests.Resources
             return warehouseList;
         }
 
-        protected override void Seed(TestDbContext context)
+        public void Seed(TestDbContext context)
         {
-            base.Seed(context);
+            if (context.Database.EnsureCreated())
+            {
+                var invItems = InitInventory(context);
+                var warehouses = InitWarehouses(context, invItems);
 
-            var invItems = InitInventory(context);
-            var warehouses = InitWarehouses(context, invItems);
-
-            context.SaveChanges();
+                context.SaveChanges();
+            }
         }
     }
 }

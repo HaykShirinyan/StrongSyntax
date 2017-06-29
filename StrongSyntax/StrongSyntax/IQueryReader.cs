@@ -13,13 +13,13 @@ namespace StrongSyntax
         /// Reads data from the database.
         /// </summary>
         /// <returns></returns>
-        ICollection<TEntity> Read();
+        IList<TEntity> Read();
 
         /// <summary>
         /// Asynchronously data from the database.
         /// </summary>
         /// <returns></returns>
-        Task<ICollection<TEntity>> ReadAsync();
+        Task<IList<TEntity>> ReadAsync();
 
         /// <summary>
         /// Projects each returned datum to a new object.
@@ -27,7 +27,7 @@ namespace StrongSyntax
         /// <typeparam name="TDestination">Destination type of the object to project the data to.</typeparam>
         /// <param name="projection">Delegate that will do the mapping of database returned records to the new object.</param>
         /// <returns></returns>
-        ICollection<TDestination> Project<TDestination>(Func<TEntity, TDestination> projection) where TDestination : class;
+        IList<TDestination> Project<TDestination>(Func<TEntity, TDestination> projection) where TDestination : class;
 
         /// <summary>
         /// Asynchronously projects each returned datum to a new object.
@@ -35,6 +35,6 @@ namespace StrongSyntax
         /// <typeparam name="TDestination">Destination type of the object to project the data to.</typeparam>
         /// <param name="projection">Delegate that will do the mapping of database returned records to the new object.</param>
         /// <returns></returns>
-        Task<ICollection<TDestination>> ProjectAsync<TDestination>(Func<TEntity, TDestination> projection) where TDestination : class;
+        Task<IList<TDestination>> ProjectAsync<TDestination>(Func<TEntity, TDestination> projection) where TDestination : class;
     }
 }

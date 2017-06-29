@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace StrongSyntax.QueryBuilders
 {
@@ -181,13 +182,17 @@ namespace StrongSyntax.QueryBuilders
 
         private void CreateFilterParams(string filter, object[] values)
         {
-            int paramCount = filter.Count(s => s == '@');
+            var paramCount = filter.Split(' ')
+                .Where(s => Regex.IsMatch(s, @"\@[0-9]+"))
+                .Select(s=> Regex.Match(s, @"\@[0-9]+").Value)
+                .Distinct()
+                .Count();
 
             ValidateWhereClause(filter, paramCount, values);
 
             foreach (var val in values)
             {
-                this._paramList.Add(new SqlParameter("@" + this._paramList.Count.ToString(), val));
+                this.AddParam(val);
             }
         }
 
@@ -255,6 +260,15 @@ namespace StrongSyntax.QueryBuilders
             where TEntity : class, new()
         {
             return new DbQueryReader<TEntity>(this);
+        }
+
+        public IQueryReader<TEntity> PrepareReader<TEntity>(string entityName)
+            where TEntity : class, new()
+        {
+            return new DbQueryReader<TEntity>(this)
+            {
+                EntityName = entityName
+            };
         }
 
         public virtual string ToString(string alias)

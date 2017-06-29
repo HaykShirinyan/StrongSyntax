@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StrongSyntaxTests.Resources.Models
+namespace StrongSyntax.Tests.Resources.Models
 {
-    class ModelBase
+    public class ModelBase
     {
         [Key]
         [Column(Order = 0)]
@@ -17,7 +17,6 @@ namespace StrongSyntaxTests.Resources.Models
 
         [Required]
         [StringLength(100)]
-        [Index("IX_Code_UK", IsUnique = true)]
         public string Code { get; set; }
 
         /// <summary>

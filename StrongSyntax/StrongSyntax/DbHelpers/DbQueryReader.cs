@@ -1,4 +1,5 @@
-﻿using StrongSyntax.QueryBuilders;
+﻿using StrongSyntax.ExtensionMethods;
+using StrongSyntax.QueryBuilders;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,28 +17,18 @@ namespace StrongSyntax.DbHelpers
     {
         private SelectBuilder _queryBuilder;
 
+        public string EntityName { get; set; }
+
         public DbQueryReader(SelectBuilder queryBuilder)
         {
             _queryBuilder = queryBuilder;
-        }
-
-        private bool IsNavigationalProperty(PropertyInfo p)
-        {
-            var type = p.PropertyType;
-
-            if ((type.IsClass) && type != typeof(string))
-            {
-                return true;
-            }
-
-            return false;
         }
 
         private string GetColumnName(PropertyInfo p)
         {
             string name = p.Name;
 
-            if (IsNavigationalProperty(p))
+            if (p.IsNavigationalProperty())
             {
                 name = p.PropertyType.Name + p.Name;
             }
@@ -79,8 +70,15 @@ namespace StrongSyntax.DbHelpers
             {
                 Type convertTo = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
 
-                p.SetValue(entity, Convert.ChangeType
-                    (value, convertTo, CultureInfo.InvariantCulture), null);
+                if (convertTo.GetTypeInfo().IsEnum)
+                {
+                    p.SetValue(entity, Enum.ToObject(convertTo, value));
+                }
+                else
+                {
+                    p.SetValue(entity, Convert.ChangeType
+                        (value, convertTo, CultureInfo.InvariantCulture), null);
+                }
             }
         }
 
@@ -99,7 +97,8 @@ namespace StrongSyntax.DbHelpers
 
         private void SetNavigationalProperty(object entity, object value, PropertyInfo[] props, string[] property)
         {
-            var prop = props.SingleOrDefault(p => (p.PropertyType.Name + "s").Equals(property[0], StringComparison.OrdinalIgnoreCase));
+            //var prop = props.SingleOrDefault(p => (p.PropertyType.Name + "s").Equals(property[0], StringComparison.OrdinalIgnoreCase));
+            var prop = props.SingleOrDefault(p => (p.PropertyType.Name + "s").Equals(property[0], StringComparison.OrdinalIgnoreCase) || p.Name.Equals(property[0], StringComparison.OrdinalIgnoreCase));
 
             if (prop != null)
             {
@@ -110,7 +109,7 @@ namespace StrongSyntax.DbHelpers
                     propInstance = Activator.CreateInstance(prop.PropertyType);
                 }
 
-                SetValue(propInstance, value, propInstance.GetType().GetProperty(property[1]));
+                SetValue(propInstance, value, propInstance.GetType().GetTypeInfo().GetProperty(property[1]));
 
                 prop.SetValue(entity, propInstance);
             }
@@ -118,9 +117,12 @@ namespace StrongSyntax.DbHelpers
 
         private void SetProperty(TEntity entity, string name, object value, PropertyInfo[] props)
         {
-            if (name.IndexOf(typeof(TEntity).Name, StringComparison.OrdinalIgnoreCase) > -1)
+            var nameParts = name.IndexOf('.') > - 1 ? name.Split('.') : new[] { typeof(TEntity).Name + "s", name };
+            
+            if (nameParts[0].Equals(typeof(TEntity).Name + "s", StringComparison.OrdinalIgnoreCase)
+                || nameParts[0].Equals(this.EntityName, StringComparison.OrdinalIgnoreCase))
             {
-                string propName = name.Substring(name.IndexOf('.') + 1);
+                string propName = nameParts[1];
 
                 var prop = props.SingleOrDefault(p => p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase));
 
@@ -131,7 +133,7 @@ namespace StrongSyntax.DbHelpers
             }
             else
             {
-                SetNavigationalProperty(entity, value, props, name.Split('.'));
+                SetNavigationalProperty(entity, value, props, nameParts);
             }
         }
 
@@ -139,14 +141,17 @@ namespace StrongSyntax.DbHelpers
         {
             TEntity entity = new TEntity();
 
-            var props = typeof(TEntity).GetProperties();
+            var props = typeof(TEntity).GetTypeInfo().GetProperties();
 
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 string name = reader.GetName(i);
                 object value = reader.GetValue(i);
 
-                SetProperty(entity, name, value, props);
+                if (value != null && value != DBNull.Value)
+                {
+                    SetProperty(entity, name, value, props);
+                }                
             }
 
             return entity;
@@ -162,13 +167,21 @@ namespace StrongSyntax.DbHelpers
 
             if (_queryBuilder.SqlParameters.Count > 0)
             {
-                command.Parameters.AddRange(_queryBuilder.SqlParameters.ToArray());
+                foreach(var p in _queryBuilder.SqlParameters)
+                {
+                    command.Parameters.Add(new SqlParameter
+                    {
+                        ParameterName = p.ParameterName,
+                        SqlDbType = p.SqlDbType,
+                        Value = p.Value
+                    });
+                }
             }
 
             return command;
         }
 
-        public ICollection<TDestination> Project<TDestination>(Func<TEntity, TDestination> projection) 
+        public IList<TDestination> Project<TDestination>(Func<TEntity, TDestination> projection) 
             where TDestination : class
         {
             if (projection == null)
@@ -199,7 +212,7 @@ namespace StrongSyntax.DbHelpers
             return entityList;
         }
 
-        public async Task<ICollection<TDestination>> ProjectAsync<TDestination>(Func<TEntity, TDestination> projection)
+        public async Task<IList<TDestination>> ProjectAsync<TDestination>(Func<TEntity, TDestination> projection)
             where TDestination : class
         {
             if (projection == null)
@@ -230,7 +243,7 @@ namespace StrongSyntax.DbHelpers
             return entityList;
         }
 
-        public ICollection<TEntity> Read()
+        public IList<TEntity> Read()
         {
             List<TEntity> entityList = new List<TEntity>();
 
@@ -253,7 +266,7 @@ namespace StrongSyntax.DbHelpers
             return entityList;
         }
 
-        public async Task<ICollection<TEntity>> ReadAsync()
+        public async Task<IList<TEntity>> ReadAsync()
         {
             List<TEntity> entityList = new List<TEntity>();
 

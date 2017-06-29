@@ -1,6 +1,7 @@
 ﻿using StrongSyntax.DbHelpers;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,9 @@ namespace StrongSyntax.QueryBuilders
 {
     class DmlBase : SelectBuilder
     {
+        public bool ParametrizeQuery { get; set; }
+        public DbTransaction CurrentTransaction { get; set; }
+
         public DmlBase(Syntax syntax) 
             : base(syntax)
         {
@@ -18,7 +22,7 @@ namespace StrongSyntax.QueryBuilders
         {
             var helper = new DmlQueryHelper(this);
 
-            int rowsAffected = helper.Execute();
+            int rowsAffected = helper.Execute(this.CurrentTransaction);
 
             return rowsAffected;
         }
@@ -27,7 +31,7 @@ namespace StrongSyntax.QueryBuilders
         {
             var helper = new DmlQueryHelper(this);
 
-            int rowsAffected = await helper.ExecuteAsync();
+            int rowsAffected = await helper.ExecuteAsync(this.CurrentTransaction);
 
             return rowsAffected;
         }

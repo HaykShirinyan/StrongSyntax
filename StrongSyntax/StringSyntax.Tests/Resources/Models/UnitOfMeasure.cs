@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StrongSyntaxTests.Resources.Models
+namespace StrongSyntax.Tests.Resources.Models
 {
-    class Warehouse : ModelBase
+    public class UnitOfMeasure : ModelBase
     {
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public virtual ICollection<WarehouseItem> InvItems { get; set; }
+        public virtual ICollection<InvItem> InvItems { get; set; }
     }
 }

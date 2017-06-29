@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StrongSyntax;
-using StrongSyntaxTests.Resources.Models;
-using StrongSyntaxTests.Resources.DTOs;
+using StrongSyntax.Tests.Resources.Models;
+using StrongSyntax.Tests.Resources.DTOs;
 
-namespace StrongSyntaxTests
+namespace StrongSyntax.Tests
 {
-    [TestClass]
+   
     public class StrongQueryBuilderTest : TestBase
     {
         public StrongQueryBuilderTest()
@@ -22,7 +22,7 @@ namespace StrongSyntaxTests
             return dto;
         }
 
-        [TestMethod]
+       
         public void TestMethod1()
         {
             var items = Syntax
@@ -41,7 +41,7 @@ namespace StrongSyntaxTests
             Assert.IsFalse(string.IsNullOrEmpty(items.ToString()));
         }
 
-        [TestMethod]
+       
         public void Select()
         {
             var items = Syntax

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StrongSyntax.QueryBuilders
 {
-    class SubSelectBuilder : SelectBuilder
+    internal class SubSelectBuilder : SelectBuilder
     {
         private QueryBuilderBase _mainSelect;
 

@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StrongSyntaxTests.Resources.DTOs
+namespace StrongSyntax.Tests.Resources.Models
 {
-    class InvItemDTO
-    {
-        public Guid ID { get; set; }
-
-        public string Code { get; set; }
-
+    public class InvItem : ModelBase
+    {      
         public string Name { get; set; }
 
         public string Description { get; set; }
 
         public decimal? Quantity { get; set; }
-
-        public decimal? InTranferQty { get; set; }
-
-        public decimal? OnHandQty { get; set; }
 
         public decimal? OnSoQty { get; set; }
 
@@ -32,6 +21,8 @@ namespace StrongSyntaxTests.Resources.DTOs
 
         public decimal? InStoreQty { get; set; }
 
+        public decimal? OnHandQty { get; set; }
+
         public decimal? Weight { get; set; }
 
         public decimal? AvgWeight { get; set; }
@@ -40,7 +31,10 @@ namespace StrongSyntaxTests.Resources.DTOs
 
         public decimal? UnitPrice { get; set; }
 
-        public Guid? UOMID { get; set; }
-        public UnitOfMeasureDTO UOM { get; set; }
+        public virtual Guid? UOMID { get; set; }
+
+        public virtual UnitOfMeasure UOM { get; set; }
+
+        public virtual ICollection<WarehouseItem> WarehouseItems { get; set; }
     }
 }

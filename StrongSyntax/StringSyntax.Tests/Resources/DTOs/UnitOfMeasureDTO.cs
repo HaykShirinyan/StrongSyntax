@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StrongSyntaxTests.Resources.DTOs
+namespace StrongSyntax.Tests.Resources.DTOs
 {
-    class UnitOfMeasureDTO
+    public class UnitOfMeasureDTO
     {
         public Guid ID { get; set; }
 
